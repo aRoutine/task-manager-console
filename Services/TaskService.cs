@@ -72,4 +72,24 @@ public class TaskService
         _tasks.Remove(taskItem);
         Console.WriteLine("Задача с заданным Id успешна удалена");
     }
+
+    public void RenameTask(int id, string title)
+    {
+        TaskItem? taskItem = _tasks.FirstOrDefault(t => t.Id == id);
+
+        if (taskItem == null)
+        {
+            Console.WriteLine("Задание по заданному ID не существует");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            Console.WriteLine("Описание не может быть пустым");
+            return;
+        }
+
+        taskItem.Title = title;
+        Console.WriteLine("Описание задания успешно исправлено !");
+    }
 }

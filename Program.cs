@@ -11,6 +11,7 @@ while (true)
     Console.WriteLine("2. Показать задачи");
     Console.WriteLine("3. Удалить задачу");
     Console.WriteLine("4. Отметить задачу выполненной");
+    Console.WriteLine("5. Иземенить описание задачи");
     Console.WriteLine("0. Выйти");
     Console.Write("Выберите действие: ");
 
@@ -61,6 +62,32 @@ while (true)
             }
 
             Console.WriteLine("Некорректный ID.");
+            break;
+
+        case "5":
+
+            Console.WriteLine("Введите ID задачи, которую хотите редактировать: ");
+            
+            string? renameInputId = Console.ReadLine();
+
+            if (int.TryParse(renameInputId, out int renameId))
+            {
+                Console.WriteLine("Введите новое описание задачи: ");
+
+                string? newTitle = Console.ReadLine();
+
+                if (newTitle == null)
+                {
+                    Console.WriteLine("Вы ввели некорректное описание");
+                    break;
+                }
+
+                taskService.RenameTask(renameId, newTitle);
+            } else
+            {
+                Console.WriteLine("Неверный формат ID");
+                break;
+            }
             break;
 
         case "0":
