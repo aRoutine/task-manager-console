@@ -46,31 +46,31 @@ while (true)
         case "3":
             Console.WriteLine("Введите Id задачи: ");
             string? inputId = Console.ReadLine();
-            
+
             if (int.TryParse(inputId, out int id))
             {
                 taskService.DeleteTask(id);
                 break;
             }
 
-              Console.WriteLine("Некорректный ID.");
-              break;
+            Console.WriteLine("Некорректный ID.");
+            break;
 
         case "4":
             Console.WriteLine("Введите Id задачи: ");
             string? completeInput = Console.ReadLine();
-            
+
             if (int.TryParse(completeInput, out int completeId))
             {
                 taskService.CompleteTask(completeId);
                 break;
             }
 
-              Console.WriteLine("Некорректный ID.");
-              break;
+            Console.WriteLine("Некорректный ID.");
+            break;
 
         case "0":
-         Console.WriteLine("Выход из программы.");
+            Console.WriteLine("Выход из программы.");
             return;
 
         default:

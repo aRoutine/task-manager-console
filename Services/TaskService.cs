@@ -5,7 +5,7 @@ namespace TaskManager.Services;
 
 public class TaskService
 {
-    public List<TaskItem> _tasks = new ();
+    public List<TaskItem> _tasks = new();
     private int nextId = 1;
 
     public void AddTask(string title)
@@ -20,7 +20,7 @@ public class TaskService
         _tasks.Add(newTaskItem);
         nextId++;
 
-    Console.WriteLine("Задача успешно добавлена!");
+        Console.WriteLine("Задача успешно добавлена!");
     }
 
     public void ShowTasks()
@@ -61,7 +61,7 @@ public class TaskService
 
     public void DeleteTask(int id)
     {
-        TaskItem ? taskItem = _tasks.FirstOrDefault(item => item.Id == id);
+        TaskItem? taskItem = _tasks.FirstOrDefault(item => item.Id == id);
 
         if (taskItem == null)
         {
