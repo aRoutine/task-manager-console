@@ -47,7 +47,7 @@ public class TaskService
 
     public void CompleteTask(int id)
     {
-        TaskItem taskItem = _tasks.FirstOrDefault(t => t.Id == id);
+        TaskItem? taskItem = _tasks.FirstOrDefault(t => t.Id == id);
 
         if (taskItem == null)
         {
@@ -70,6 +70,6 @@ public class TaskService
         }
 
         _tasks.Remove(taskItem);
-        Console.WriteLine("Задача с заданным Id не была найдена в базе данных");
+        Console.WriteLine("Задача с заданным Id успешна удалена");
     }
 }

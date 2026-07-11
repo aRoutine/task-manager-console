@@ -16,6 +16,8 @@ while (true)
 
     string? input = Console.ReadLine();
 
+    Console.WriteLine("");
+
     switch (input)
     {
         case "1":
@@ -29,7 +31,6 @@ while (true)
             }
 
             taskService.AddTask(title);
-            Console.WriteLine("Задача успешно добавлена !");
             break;
 
         case "2":
