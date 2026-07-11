@@ -1,4 +1,4 @@
-namespace TaskManager.models;
+namespace TaskManager.Models;
 
 public class TaskItem
 {

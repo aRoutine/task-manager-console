@@ -1,5 +1,5 @@
-﻿using TaskManager.models;
-using TaskManager.services;
+﻿using TaskManager.Models;
+using TaskManager.Services;
 
 TaskService taskService = new TaskService();
 

@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using TaskManager.models;
+using TaskManager.Models;
 
-namespace TaskManager.services;
+namespace TaskManager.Services;
 
 public class TaskService
 {
