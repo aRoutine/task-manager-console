@@ -24,7 +24,7 @@ while (true)
             Console.WriteLine("Пожалуйста, введите краткое описание задачи: ");
             string? title = Console.ReadLine();
 
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrWhiteSpace(title))
             {
                 Console.WriteLine("Описание не может быть пустым");
                 break;
@@ -34,12 +34,6 @@ while (true)
             break;
 
         case "2":
-            if (taskService._tasks.Count == 0)
-            {
-                Console.WriteLine("У вас отсутствуют какие-либо задачи");
-                break;
-            }
-
             taskService.ShowTasks();
             break;
 

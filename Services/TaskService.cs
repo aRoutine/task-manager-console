@@ -1,11 +1,10 @@
-using System.Diagnostics;
 using TaskManager.Models;
 
 namespace TaskManager.Services;
 
 public class TaskService
 {
-    public List<TaskItem> _tasks = new();
+    private readonly List<TaskItem> _tasks = new();
     private int nextId = 1;
 
     public void AddTask(string title)
@@ -33,6 +32,7 @@ public class TaskService
 
         foreach (TaskItem taskItem in _tasks)
         {
+            Console.WriteLine($"ID: {taskItem.Id}");
             Console.WriteLine($"Задача: {taskItem.Title}");
 
             string status = taskItem.IsComplete ? "Выполнено" : "Не выполнена";
