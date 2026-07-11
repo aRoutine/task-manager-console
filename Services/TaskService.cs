@@ -5,12 +5,12 @@ namespace TaskManager.services;
 
 public class TaskService
 {
-    private List<TaskItem> _tasks = new ();
+    public List<TaskItem> _tasks = new ();
     private int nextId = 1;
 
     public void AddTask(string title)
     {
-        if (title == null)
+        if (string.IsNullOrWhiteSpace(title))
         {
             Console.WriteLine("Название задачи не может быть пустым");
             return;
@@ -35,9 +35,7 @@ public class TaskService
         {
             Console.WriteLine($"Задача: {taskItem.Title}");
 
-            string status = "Не выполнено";
-            if (taskItem.IsComplete == true)
-                status = "Выполнено";
+            string status = taskItem.IsComplete ? "Выполнено" : "Не выполнена";
 
             Console.WriteLine($"Статус: {status}");
 
@@ -47,18 +45,31 @@ public class TaskService
         Console.WriteLine("Всего заданий: " + _tasks.Count);
     }
 
-    public void DeleteTask(int id)
+    public void CompleteTask(int id)
     {
-        foreach (TaskItem taskItem in _tasks)
+        TaskItem taskItem = _tasks.FirstOrDefault(t => t.Id == id);
+
+        if (taskItem == null)
         {
-            if (id == taskItem.Id)
-            {
-                _tasks.Remove(taskItem);
-                Console.WriteLine("Задача успешно удалена !");
-                return;
-            }
+            Console.WriteLine("Задача по заданному Id не была найдена");
+            return;
         }
 
+        taskItem.IsComplete = true;
+        Console.WriteLine($"Задача {taskItem.Title} успешно выполнена !");
+    }
+
+    public void DeleteTask(int id)
+    {
+        TaskItem ? taskItem = _tasks.FirstOrDefault(item => item.Id == id);
+
+        if (taskItem == null)
+        {
+            Console.WriteLine("Задача по заданному Id не была найдена в базе данных");
+            return;
+        }
+
+        _tasks.Remove(taskItem);
         Console.WriteLine("Задача с заданным Id не была найдена в базе данных");
     }
 }
