@@ -7,7 +7,7 @@ public class TaskService
     private readonly List<TaskItem> _tasks = new();
     private int nextId = 1;
 
-    public void AddTask(string title)
+    public void AddTask(string title, TaskPriority taskPriority)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -15,7 +15,7 @@ public class TaskService
             return;
         }
 
-        TaskItem newTaskItem = new TaskItem(nextId, title);
+        TaskItem newTaskItem = new TaskItem(nextId, title, taskPriority);
         _tasks.Add(newTaskItem);
         nextId++;
 
@@ -30,19 +30,9 @@ public class TaskService
             return;
         }
 
-        foreach (TaskItem taskItem in _tasks)
-        {
-            Console.WriteLine($"ID: {taskItem.Id}");
-            Console.WriteLine($"Задача: {taskItem.Title}");
-
-            string status = taskItem.IsComplete ? "Выполнено" : "Не выполнена";
-
-            Console.WriteLine($"Статус: {status}");
-
-            Console.WriteLine("");
-        }
-
-        Console.WriteLine("Всего заданий: " + _tasks.Count);
+        FilterTasks(TaskPriority.High);
+        FilterTasks(TaskPriority.Medium);
+        FilterTasks(TaskPriority.Low);
     }
 
     public void CompleteTask(int id)
@@ -91,5 +81,27 @@ public class TaskService
 
         taskItem.Title = title;
         Console.WriteLine("Описание задания успешно исправлено !");
+    }
+
+    private void FilterTasks(TaskPriority filter)
+    {
+        foreach (TaskItem taskItem in _tasks)
+        {
+            if (taskItem.TaskPriority != filter)
+            {
+                continue;
+            }
+
+            Console.WriteLine($"ID: {taskItem.Id}");
+            Console.WriteLine($"Задача: {taskItem.Title}");
+            Console.WriteLine($"Приоритет: {taskItem.TaskPriority}");
+            Console.WriteLine($"Дата создания: {taskItem.CreatedAt}");
+
+            string status = taskItem.IsComplete ? "Выполнено" : "Не выполнена";
+
+            Console.WriteLine($"Статус: {status}");
+
+            Console.WriteLine("");
+        }
     }
 }

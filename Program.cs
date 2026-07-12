@@ -31,7 +31,23 @@ while (true)
                 break;
             }
 
-            taskService.AddTask(title);
+            Console.WriteLine("Введите номер приоритета, доступные номера: ");
+            Console.WriteLine("1. Низкий приоритет");
+            Console.WriteLine("2. Средний приоритет" );
+            Console.WriteLine("3. Высокий приоритет");
+
+            string? priorityInput = Console.ReadLine();
+
+            if (!int.TryParse(priorityInput, out int priorityNumber) ||
+                !Enum.IsDefined(typeof(TaskPriority), priorityNumber))
+            {
+                Console.WriteLine("Некорректный приоритет");
+                break;
+            }
+
+            TaskPriority priority = (TaskPriority)priorityNumber;
+
+            taskService.AddTask(title, priority);
             break;
 
         case "2":
@@ -67,7 +83,7 @@ while (true)
         case "5":
 
             Console.WriteLine("Введите ID задачи, которую хотите редактировать: ");
-            
+
             string? renameInputId = Console.ReadLine();
 
             if (int.TryParse(renameInputId, out int renameId))
@@ -83,7 +99,8 @@ while (true)
                 }
 
                 taskService.RenameTask(renameId, newTitle);
-            } else
+            }
+            else
             {
                 Console.WriteLine("Неверный формат ID");
                 break;
