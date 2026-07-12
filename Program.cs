@@ -51,8 +51,42 @@ while (true)
             break;
 
         case "2":
-            taskService.ShowTasks();
-            break;
+
+            Console.WriteLine("Укажите какие задачи вас интересуют: ");
+            Console.WriteLine("1. Все задачи");
+            Console.WriteLine("2. Выполненные задачи");
+            Console.WriteLine("3. Невыполненные задачи");
+
+            string? filterInput = Console.ReadLine();
+
+            if (int.TryParse(filterInput, out int filterNum))
+            {
+                if (filterNum == 1)
+                {
+                    taskService.ShowTasks(null);
+                    break;
+                }
+
+                if (filterNum == 2)
+                {
+                    taskService.ShowCompletedTasks();
+                    break;
+                }
+
+                if (filterNum == 3)
+                {
+                    taskService.ShowNotCompletedTasks();
+                    break;
+                }
+
+                Console.WriteLine("Введите корректное число !");
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Вы ввели некорректный запрос");
+                break;
+            }
 
         case "3":
             Console.WriteLine("Введите Id задачи: ");

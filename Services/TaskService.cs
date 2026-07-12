@@ -22,17 +22,48 @@ public class TaskService
         Console.WriteLine("Задача успешно добавлена!");
     }
 
-    public void ShowTasks()
+    public void ShowTasks(List<TaskItem> taskItems)
     {
-        if (_tasks.Count == 0)
+        if (taskItems == null)
         {
-            Console.WriteLine("В данный момент у вас нет никаких задач");
+            taskItems = _tasks;
+        }
+
+        if (taskItems.Count == 0)
+        {
+            Console.WriteLine("Нет подходящих задач");
             return;
         }
 
-        FilterTasks(TaskPriority.High);
-        FilterTasks(TaskPriority.Medium);
-        FilterTasks(TaskPriority.Low);
+        FilterTasks(TaskPriority.High, taskItems);
+        FilterTasks(TaskPriority.Medium, taskItems);
+        FilterTasks(TaskPriority.Low, taskItems);
+    }
+
+    public void ShowCompletedTasks()
+    {
+        List<TaskItem> CompletedTasksList = _tasks.Where(t => t.IsComplete).ToList();
+
+        if (CompletedTasksList.Count == 0)
+        {
+            Console.WriteLine("Нет заданий по заданному фильтру");
+            return;
+        }
+
+        ShowTasks(CompletedTasksList);
+    }
+
+    public void ShowNotCompletedTasks()
+    {
+        List<TaskItem> NotCompletedTasksList = _tasks.Where(t => !t.IsComplete).ToList();
+
+        if (NotCompletedTasksList.Count == 0)
+        {
+            Console.WriteLine("Нет заданий по заданному фильтру");
+            return;
+        }
+
+        ShowTasks(NotCompletedTasksList);
     }
 
     public void CompleteTask(int id)
@@ -83,9 +114,9 @@ public class TaskService
         Console.WriteLine("Описание задания успешно исправлено !");
     }
 
-    private void FilterTasks(TaskPriority filter)
+    private void FilterTasks(TaskPriority filter, List<TaskItem> taskItems)
     {
-        foreach (TaskItem taskItem in _tasks)
+        foreach (TaskItem taskItem in taskItems)
         {
             if (taskItem.TaskPriority != filter)
             {
