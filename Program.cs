@@ -11,7 +11,7 @@ while (true)
     Console.WriteLine("2. Показать задачи");
     Console.WriteLine("3. Удалить задачу");
     Console.WriteLine("4. Отметить задачу выполненной");
-    Console.WriteLine("5. Иземенить описание задачи");
+    Console.WriteLine("5. Изменить описание задачи");
     Console.WriteLine("0. Выйти");
     Console.Write("Выберите действие: ");
 
@@ -63,7 +63,7 @@ while (true)
             {
                 if (filterNum == 1)
                 {
-                    taskService.ShowTasks(null);
+                    taskService.ShowTasks();
                     break;
                 }
 

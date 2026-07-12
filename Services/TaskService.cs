@@ -22,7 +22,7 @@ public class TaskService
         Console.WriteLine("Задача успешно добавлена!");
     }
 
-    public void ShowTasks(List<TaskItem> taskItems)
+    public void ShowTasks(List<TaskItem>? taskItems = null)
     {
         if (taskItems == null)
         {
@@ -35,35 +35,35 @@ public class TaskService
             return;
         }
 
-        FilterTasks(TaskPriority.High, taskItems);
-        FilterTasks(TaskPriority.Medium, taskItems);
-        FilterTasks(TaskPriority.Low, taskItems);
+        PrintTasksByPriority(TaskPriority.High, taskItems);
+        PrintTasksByPriority(TaskPriority.Medium, taskItems);
+        PrintTasksByPriority(TaskPriority.Low, taskItems);
     }
 
     public void ShowCompletedTasks()
     {
-        List<TaskItem> CompletedTasksList = _tasks.Where(t => t.IsComplete).ToList();
+        List<TaskItem> completedTasksList = _tasks.Where(t => t.IsComplete).ToList();
 
-        if (CompletedTasksList.Count == 0)
+        if (completedTasksList.Count == 0)
         {
             Console.WriteLine("Нет заданий по заданному фильтру");
             return;
         }
 
-        ShowTasks(CompletedTasksList);
+        ShowTasks(completedTasksList);
     }
 
     public void ShowNotCompletedTasks()
     {
-        List<TaskItem> NotCompletedTasksList = _tasks.Where(t => !t.IsComplete).ToList();
+        List<TaskItem> notCompletedTasksList = _tasks.Where(t => !t.IsComplete).ToList();
 
-        if (NotCompletedTasksList.Count == 0)
+        if (notCompletedTasksList.Count == 0)
         {
             Console.WriteLine("Нет заданий по заданному фильтру");
             return;
         }
 
-        ShowTasks(NotCompletedTasksList);
+        ShowTasks(notCompletedTasksList);
     }
 
     public void CompleteTask(int id)
@@ -73,6 +73,12 @@ public class TaskService
         if (taskItem == null)
         {
             Console.WriteLine("Задача по заданному Id не была найдена");
+            return;
+        }
+
+        if (taskItem.IsComplete)
+        {
+            Console.WriteLine("Эта задача уже выполнена");
             return;
         }
 
@@ -114,7 +120,7 @@ public class TaskService
         Console.WriteLine("Описание задания успешно исправлено !");
     }
 
-    private void FilterTasks(TaskPriority filter, List<TaskItem> taskItems)
+    private void PrintTasksByPriority(TaskPriority filter, List<TaskItem> taskItems)
     {
         foreach (TaskItem taskItem in taskItems)
         {
