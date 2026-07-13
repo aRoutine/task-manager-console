@@ -5,9 +5,9 @@ namespace TaskManager.Services;
 
 public class TaskService
 {
-    private readonly TaskStorage _taskStorage = new ();
+    private readonly TaskStorage _taskStorage = new();
     private readonly List<TaskItem> _tasks;
-    private int nextId = 1;
+    private int _nextId = 1;
 
     public TaskService()
     {
@@ -15,7 +15,7 @@ public class TaskService
 
         if (_tasks.Count > 0)
         {
-            nextId = _tasks.Max(t => t.Id) + 1;
+            _nextId = _tasks.Max(t => t.Id) + 1;
         }
     }
 
@@ -27,9 +27,9 @@ public class TaskService
             return;
         }
 
-        TaskItem newTaskItem = new TaskItem(nextId, title, taskPriority);
+        TaskItem newTaskItem = new TaskItem(_nextId, title, taskPriority);
         _tasks.Add(newTaskItem);
-        nextId++;
+        _nextId++;
 
         _taskStorage.SaveTasks(_tasks);
 
@@ -140,11 +140,11 @@ public class TaskService
         _taskStorage.SaveTasks(_tasks);
     }
 
-    private void PrintTasksByPriority(TaskPriority filter, List<TaskItem> taskItems)
+    private void PrintTasksByPriority(TaskPriority priority, List<TaskItem> taskItems)
     {
         foreach (TaskItem taskItem in taskItems)
         {
-            if (taskItem.TaskPriority != filter)
+            if (taskItem.TaskPriority != priority)
             {
                 continue;
             }

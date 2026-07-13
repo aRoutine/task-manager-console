@@ -126,7 +126,7 @@ while (true)
 
                 string? newTitle = Console.ReadLine();
 
-                if (newTitle == null)
+                if (string.IsNullOrWhiteSpace(newTitle))
                 {
                     Console.WriteLine("Вы ввели некорректное описание");
                     break;
