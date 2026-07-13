@@ -1,11 +1,23 @@
 using TaskManager.Models;
+using TaskManager.Storage;
 
 namespace TaskManager.Services;
 
 public class TaskService
 {
-    private readonly List<TaskItem> _tasks = new();
+    private readonly TaskStorage _taskStorage = new ();
+    private readonly List<TaskItem> _tasks;
     private int nextId = 1;
+
+    public TaskService()
+    {
+        _tasks = _taskStorage.LoadTasks();
+
+        if (_tasks.Count > 0)
+        {
+            nextId = _tasks.Max(t => t.Id) + 1;
+        }
+    }
 
     public void AddTask(string title, TaskPriority taskPriority)
     {
@@ -18,6 +30,8 @@ public class TaskService
         TaskItem newTaskItem = new TaskItem(nextId, title, taskPriority);
         _tasks.Add(newTaskItem);
         nextId++;
+
+        _taskStorage.SaveTasks(_tasks);
 
         Console.WriteLine("Задача успешно добавлена!");
     }
@@ -84,6 +98,8 @@ public class TaskService
 
         taskItem.IsComplete = true;
         Console.WriteLine($"Задача {taskItem.Title} успешно выполнена !");
+
+        _taskStorage.SaveTasks(_tasks);
     }
 
     public void DeleteTask(int id)
@@ -98,6 +114,8 @@ public class TaskService
 
         _tasks.Remove(taskItem);
         Console.WriteLine("Задача с заданным Id успешна удалена");
+
+        _taskStorage.SaveTasks(_tasks);
     }
 
     public void RenameTask(int id, string title)
@@ -118,6 +136,8 @@ public class TaskService
 
         taskItem.Title = title;
         Console.WriteLine("Описание задания успешно исправлено !");
+
+        _taskStorage.SaveTasks(_tasks);
     }
 
     private void PrintTasksByPriority(TaskPriority filter, List<TaskItem> taskItems)
