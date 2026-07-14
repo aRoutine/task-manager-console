@@ -1,5 +1,6 @@
 ﻿using TaskManager.Models;
 using TaskManager.Services;
+using TaskManager.Results;
 
 TaskService taskService = new TaskService();
 
@@ -47,7 +48,8 @@ while (true)
 
             TaskPriority priority = (TaskPriority)priorityNumber;
 
-            taskService.AddTask(title, priority);
+            TaskOperationResult addResult = taskService.AddTask(title, priority);
+            Console.WriteLine(addResult.Message);
             break;
 
         case "2":
@@ -63,19 +65,22 @@ while (true)
             {
                 if (filterNum == 1)
                 {
-                    taskService.ShowTasks();
+                    TaskOperationResult showResult = taskService.ShowTasks();
+                    Console.WriteLine(showResult.Message);
                     break;
                 }
 
                 if (filterNum == 2)
                 {
-                    taskService.ShowCompletedTasks();
+                    TaskOperationResult showCompleteResult = taskService.ShowCompletedTasks();
+                    Console.WriteLine(showCompleteResult.Message);
                     break;
                 }
 
                 if (filterNum == 3)
                 {
-                    taskService.ShowNotCompletedTasks();
+                    TaskOperationResult showNotCompleteResult = taskService.ShowNotCompletedTasks();
+                    Console.WriteLine(showNotCompleteResult.Message);
                     break;
                 }
 
@@ -94,7 +99,8 @@ while (true)
 
             if (int.TryParse(inputId, out int id))
             {
-                taskService.DeleteTask(id);
+                TaskOperationResult deleteResult = taskService.DeleteTask(id);
+                Console.WriteLine(deleteResult.Message);
                 break;
             }
 
@@ -107,7 +113,8 @@ while (true)
 
             if (int.TryParse(completeInput, out int completeId))
             {
-                taskService.CompleteTask(completeId);
+                TaskOperationResult completeResult = taskService.CompleteTask(completeId);
+                Console.WriteLine(completeResult.Message);
                 break;
             }
 
@@ -132,7 +139,8 @@ while (true)
                     break;
                 }
 
-                taskService.RenameTask(renameId, newTitle);
+                TaskOperationResult renameResult = taskService.RenameTask(renameId, newTitle);
+                Console.WriteLine(renameResult.Message);
             }
             else
             {
