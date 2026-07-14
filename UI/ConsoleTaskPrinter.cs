@@ -8,11 +8,11 @@ public class ConsoleTaskPrinter
     {
         if (tasks.Count == 0)
         {
-            Console.WriteLine("Нет подходящий задач");
+            Console.WriteLine("Нет подходящих задач");
             return;
         }
 
-        foreach(TaskItem taskItem in tasks)
+        foreach (TaskItem taskItem in tasks)
         {
             PrintTask(taskItem);
         }
@@ -29,7 +29,7 @@ public class ConsoleTaskPrinter
         Console.WriteLine($"Приоритет: {task.TaskPriority}");
         Console.WriteLine($"Время создания: {task.CreatedAt}");
 
-        var status = task.IsComplete ? "Выполнено" : "Не выполнено";
+        string status = task.IsComplete ? "Выполнено" : "Не выполнено";
 
         Console.WriteLine($"Статус: {status}");
         Console.WriteLine();

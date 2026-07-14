@@ -74,7 +74,7 @@ while (true)
 
                 if (filterNum == 2)
                 {
-                    taskPrinter.PrintTasks(taskService.GetCompleteTasks());
+                    taskPrinter.PrintTasks(taskService.GetCompletedTasks());
                     break;
                 }
 
@@ -86,7 +86,7 @@ while (true)
 
                 if (filterNum == 4)
                 {
-                    taskPrinter.PrintTasks(taskService.GetHighPriopityTasks());
+                    taskPrinter.PrintTasks(taskService.GetHighPriorityTasks());
                     break;
                 }
 
