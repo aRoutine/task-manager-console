@@ -1,8 +1,10 @@
 ﻿using TaskManager.Models;
 using TaskManager.Services;
 using TaskManager.Results;
+using TaskManager.UI;
 
 TaskService taskService = new TaskService();
+ConsoleTaskPrinter taskPrinter = new ConsoleTaskPrinter();
 
 while (true)
 {
@@ -34,7 +36,7 @@ while (true)
 
             Console.WriteLine("Введите номер приоритета, доступные номера: ");
             Console.WriteLine("1. Низкий приоритет");
-            Console.WriteLine("2. Средний приоритет" );
+            Console.WriteLine("2. Средний приоритет");
             Console.WriteLine("3. Высокий приоритет");
 
             string? priorityInput = Console.ReadLine();
@@ -65,19 +67,19 @@ while (true)
             {
                 if (filterNum == 1)
                 {
-                    taskService.ShowTasks();
+                    taskPrinter.PrintTasks(taskService.GetTasks());
                     break;
                 }
 
                 if (filterNum == 2)
                 {
-                    taskService.ShowCompletedTasks();
+                    taskPrinter.PrintTasks(taskService.GetCompleteTasks());
                     break;
                 }
 
                 if (filterNum == 3)
                 {
-                    taskService.ShowNotCompletedTasks();
+                    taskPrinter.PrintTasks(taskService.GetNotCompletedTasks());
                     break;
                 }
 
