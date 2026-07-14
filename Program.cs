@@ -65,22 +65,19 @@ while (true)
             {
                 if (filterNum == 1)
                 {
-                    TaskOperationResult showResult = taskService.ShowTasks();
-                    Console.WriteLine(showResult.Message);
+                    taskService.ShowTasks();
                     break;
                 }
 
                 if (filterNum == 2)
                 {
-                    TaskOperationResult showCompleteResult = taskService.ShowCompletedTasks();
-                    Console.WriteLine(showCompleteResult.Message);
+                    taskService.ShowCompletedTasks();
                     break;
                 }
 
                 if (filterNum == 3)
                 {
-                    TaskOperationResult showNotCompleteResult = taskService.ShowNotCompletedTasks();
-                    Console.WriteLine(showNotCompleteResult.Message);
+                    taskService.ShowNotCompletedTasks();
                     break;
                 }
 

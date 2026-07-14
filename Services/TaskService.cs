@@ -33,10 +33,10 @@ public class TaskService
 
         _taskStorage.SaveTasks(_tasks);
 
-        return TaskOperationResult.Ok("Задача успешно доавлена");
+        return TaskOperationResult.Ok("Задача успешно добавлена");
     }
 
-    public TaskOperationResult ShowTasks(List<TaskItem>? taskItems = null)
+    public void ShowTasks(List<TaskItem>? taskItems = null)
     {
         if (taskItems == null)
         {
@@ -45,39 +45,39 @@ public class TaskService
 
         if (taskItems.Count == 0)
         {
-            return TaskOperationResult.Fail("Нет подходящих задач");
+            return;
         }
 
         PrintTasksByPriority(TaskPriority.High, taskItems);
         PrintTasksByPriority(TaskPriority.Medium, taskItems);
         PrintTasksByPriority(TaskPriority.Low, taskItems);
-        return TaskOperationResult.Ok("Задачи успешно выведены");
+        return;
     }
 
-    public TaskOperationResult ShowCompletedTasks()
+    public void ShowCompletedTasks()
     {
         List<TaskItem> completedTasksList = _tasks.Where(t => t.IsComplete).ToList();
 
         if (completedTasksList.Count == 0)
         {
-            return TaskOperationResult.Fail("Нет заданий по заданному фильтру");
+            return;
         }
 
         ShowTasks(completedTasksList);
-        return TaskOperationResult.Ok("Задачи успешно отфильтрованны");
+        return;
     }
 
-    public TaskOperationResult ShowNotCompletedTasks()
+    public void ShowNotCompletedTasks()
     {
         List<TaskItem> notCompletedTasksList = _tasks.Where(t => !t.IsComplete).ToList();
 
         if (notCompletedTasksList.Count == 0)
         {
-            return TaskOperationResult.Fail("Нет заданий по заданному фильтру");
+            return;
         }
 
         ShowTasks(notCompletedTasksList);
-        return TaskOperationResult.Ok("Задачи успешно отфильтрованны");
+        return;
     }
 
     public TaskOperationResult CompleteTask(int id)
