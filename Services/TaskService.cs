@@ -1,5 +1,6 @@
 using TaskManager.Models;
 using TaskManager.Storage;
+using TaskManager.Results;
 
 namespace TaskManager.Services;
 
@@ -19,12 +20,11 @@ public class TaskService
         }
     }
 
-    public void AddTask(string title, TaskPriority taskPriority)
+    public TaskOperationResult AddTask(string title, TaskPriority taskPriority)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            Console.WriteLine("Название задачи не может быть пустым");
-            return;
+            return TaskOperationResult.Fail("Название задачи не может быть пустым");
         }
 
         TaskItem newTaskItem = new TaskItem(_nextId, title, taskPriority);
@@ -33,10 +33,10 @@ public class TaskService
 
         _taskStorage.SaveTasks(_tasks);
 
-        Console.WriteLine("Задача успешно добавлена!");
+        return TaskOperationResult.Ok("Задача успешно доавлена");
     }
 
-    public void ShowTasks(List<TaskItem>? taskItems = null)
+    public TaskOperationResult ShowTasks(List<TaskItem>? taskItems = null)
     {
         if (taskItems == null)
         {
@@ -45,99 +45,98 @@ public class TaskService
 
         if (taskItems.Count == 0)
         {
-            Console.WriteLine("Нет подходящих задач");
-            return;
+            return TaskOperationResult.Fail("Нет подходящих задач");
         }
 
         PrintTasksByPriority(TaskPriority.High, taskItems);
         PrintTasksByPriority(TaskPriority.Medium, taskItems);
         PrintTasksByPriority(TaskPriority.Low, taskItems);
+        return TaskOperationResult.Ok("Задачи успешно выведены");
     }
 
-    public void ShowCompletedTasks()
+    public TaskOperationResult ShowCompletedTasks()
     {
         List<TaskItem> completedTasksList = _tasks.Where(t => t.IsComplete).ToList();
 
         if (completedTasksList.Count == 0)
         {
-            Console.WriteLine("Нет заданий по заданному фильтру");
-            return;
+            return TaskOperationResult.Fail("Нет заданий по заданному фильтру");
         }
 
         ShowTasks(completedTasksList);
+        return TaskOperationResult.Ok("Задачи успешно отфильтрованны");
     }
 
-    public void ShowNotCompletedTasks()
+    public TaskOperationResult ShowNotCompletedTasks()
     {
         List<TaskItem> notCompletedTasksList = _tasks.Where(t => !t.IsComplete).ToList();
 
         if (notCompletedTasksList.Count == 0)
         {
-            Console.WriteLine("Нет заданий по заданному фильтру");
-            return;
+            return TaskOperationResult.Fail("Нет заданий по заданному фильтру");
         }
 
         ShowTasks(notCompletedTasksList);
+        return TaskOperationResult.Ok("Задачи успешно отфильтрованны");
     }
 
-    public void CompleteTask(int id)
+    public TaskOperationResult CompleteTask(int id)
     {
         TaskItem? taskItem = _tasks.FirstOrDefault(t => t.Id == id);
 
         if (taskItem == null)
         {
-            Console.WriteLine("Задача по заданному Id не была найдена");
-            return;
+            return TaskOperationResult.Fail("Задача по заданному ID не найдена");
         }
 
         if (taskItem.IsComplete)
         {
-            Console.WriteLine("Эта задача уже выполнена");
-            return;
+            return TaskOperationResult.Fail("Задача уже выполнена");
         }
 
         taskItem.IsComplete = true;
-        Console.WriteLine($"Задача {taskItem.Title} успешно выполнена !");
 
         _taskStorage.SaveTasks(_tasks);
+
+        return TaskOperationResult.Ok("Задача успешно выполнена");
     }
 
-    public void DeleteTask(int id)
+    public TaskOperationResult DeleteTask(int id)
     {
         TaskItem? taskItem = _tasks.FirstOrDefault(item => item.Id == id);
 
         if (taskItem == null)
         {
-            Console.WriteLine("Задача по заданному Id не была найдена в базе данных");
-            return;
+            return TaskOperationResult.Fail("Задача по заданному Id не была найдена в базе данных");
         }
 
         _tasks.Remove(taskItem);
-        Console.WriteLine("Задача с заданным Id успешна удалена");
 
         _taskStorage.SaveTasks(_tasks);
+
+        return TaskOperationResult.Ok("Задача успешно удалена");
+
     }
 
-    public void RenameTask(int id, string title)
+    public TaskOperationResult RenameTask(int id, string title)
     {
         TaskItem? taskItem = _tasks.FirstOrDefault(t => t.Id == id);
 
         if (taskItem == null)
         {
-            Console.WriteLine("Задание по заданному ID не существует");
-            return;
+            return TaskOperationResult.Fail("Задачи по заданному ID не существует");
         }
 
         if (string.IsNullOrWhiteSpace(title))
         {
-            Console.WriteLine("Описание не может быть пустым");
-            return;
+            return TaskOperationResult.Fail("Задача не может иметь пустое описание");
         }
 
         taskItem.Title = title;
-        Console.WriteLine("Описание задания успешно исправлено !");
 
         _taskStorage.SaveTasks(_tasks);
+
+        return TaskOperationResult.Ok("Описание успешно изменено");
     }
 
     private void PrintTasksByPriority(TaskPriority priority, List<TaskItem> taskItems)
