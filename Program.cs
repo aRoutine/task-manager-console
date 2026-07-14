@@ -60,6 +60,7 @@ while (true)
             Console.WriteLine("1. Все задачи");
             Console.WriteLine("2. Выполненные задачи");
             Console.WriteLine("3. Невыполненные задачи");
+            Console.WriteLine("4. Только задачи с высоким приоритетом");
 
             string? filterInput = Console.ReadLine();
 
@@ -80,6 +81,12 @@ while (true)
                 if (filterNum == 3)
                 {
                     taskPrinter.PrintTasks(taskService.GetNotCompletedTasks());
+                    break;
+                }
+
+                if (filterNum == 4)
+                {
+                    taskPrinter.PrintTasks(taskService.GetHighPriopityTasks());
                     break;
                 }
 

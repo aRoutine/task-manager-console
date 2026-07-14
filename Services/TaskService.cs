@@ -62,6 +62,14 @@ public class TaskService
         .ToList();
     }
 
+    public List<TaskItem> GetHighPriopityTasks()
+    {
+        return _tasks
+        .Where(t => t.TaskPriority == TaskPriority.High)
+        .OrderBy(t => t.CreatedAt)
+        .ToList();
+    }
+
     public TaskOperationResult CompleteTask(int id)
     {
         TaskItem? taskItem = _tasks.FirstOrDefault(t => t.Id == id);
