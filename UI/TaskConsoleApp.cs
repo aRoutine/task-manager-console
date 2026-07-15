@@ -1,7 +1,6 @@
 using TaskManager.Services;
 using TaskManager.Models;
 using TaskManager.Results;
-using System.IO.Compression;
 
 namespace TaskManager.UI;
 
@@ -20,15 +19,7 @@ public class TaskConsoleApp
     {
         while (true)
         {
-            Console.WriteLine();
-            Console.WriteLine("=== Task Manager ===");
-            Console.WriteLine("1. Добавить задачу");
-            Console.WriteLine("2. Показать задачи");
-            Console.WriteLine("3. Удалить задачу");
-            Console.WriteLine("4. Отметить задачу выполненной");
-            Console.WriteLine("5. Изменить описание задачи");
-            Console.WriteLine("0. Выйти");
-            Console.Write("Выберите действие: ");
+            ShowMainMenu();
 
             string? input = Console.ReadLine();
 
@@ -67,6 +58,19 @@ public class TaskConsoleApp
         }
     }
 
+    private void ShowMainMenu()
+    {
+        Console.WriteLine();
+        Console.WriteLine("=== Task Manager ===");
+        Console.WriteLine("1. Добавить задачу");
+        Console.WriteLine("2. Показать задачи");
+        Console.WriteLine("3. Удалить задачу");
+        Console.WriteLine("4. Отметить задачу выполненной");
+        Console.WriteLine("5. Изменить описание задачи");
+        Console.WriteLine("0. Выйти");
+        Console.Write("Выберите действие: ");
+    }
+
     private void AddTask()
     {
         Console.WriteLine("Пожалуйста, введите краткое описание задачи: ");
@@ -78,23 +82,15 @@ public class TaskConsoleApp
             return;
         }
 
-        Console.WriteLine("Введите номер приоритета, доступные номера: ");
-        Console.WriteLine("1. Низкий приоритет");
-        Console.WriteLine("2. Средний приоритет");
-        Console.WriteLine("3. Высокий приоритет");
+        TaskPriority? priority = ReadPriority();
 
-        string? priorityInput = Console.ReadLine();
-
-        if (!int.TryParse(priorityInput, out int priorityNumber) ||
-            !Enum.IsDefined(typeof(TaskPriority), priorityNumber))
+        if (priority == null)
         {
             Console.WriteLine("Некорректный приоритет");
             return;
         }
 
-        TaskPriority priority = (TaskPriority)priorityNumber;
-
-        TaskOperationResult addResult = _taskService.AddTask(title, priority);
+        TaskOperationResult addResult = _taskService.AddTask(title, priority.Value);
         Console.WriteLine(addResult.Message);
     }
 
@@ -156,8 +152,6 @@ public class TaskConsoleApp
 
         TaskOperationResult result = _taskService.DeleteTask(id.Value);
         Console.WriteLine(result.Message);
-
-        return;
     }
 
     private void CompleteTask()
@@ -172,44 +166,54 @@ public class TaskConsoleApp
 
         TaskOperationResult result = _taskService.CompleteTask(id.Value);
         Console.WriteLine(result.Message);
-
-        return;
     }
 
     private void RenameTask()
     {
-        Console.WriteLine("Введите ID задачи, которую хотите редактировать: ");
+        int? id = GetTaskId("Введите ID задачи, которую хотите редактировать: ");
 
-        string? renameInputId = Console.ReadLine();
-
-        if (int.TryParse(renameInputId, out int renameId))
-        {
-            Console.WriteLine("Введите новое описание задачи: ");
-
-            string? newTitle = Console.ReadLine();
-
-            if (string.IsNullOrWhiteSpace(newTitle))
-            {
-                Console.WriteLine("Вы ввели некорректное описание");
-                return;
-            }
-
-            TaskOperationResult renameResult = _taskService.RenameTask(renameId, newTitle);
-            Console.WriteLine(renameResult.Message);
-        }
-        else
+        if (id == null)
         {
             Console.WriteLine("Неверный формат ID");
             return;
         }
-        return;
+
+        Console.WriteLine("Введите новое описание задачи: ");
+        string? newTitle = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(newTitle))
+        {
+            Console.WriteLine("Вы ввели некорректное описание");
+            return;
+        }
+
+        TaskOperationResult result = _taskService.RenameTask(id.Value, newTitle);
+        Console.WriteLine(result.Message);
     }
 
     //helpers
 
-    private int? GetTaskId()
+    private TaskPriority? ReadPriority()
     {
-        Console.WriteLine("Введите Id задачи: ");
+        Console.WriteLine("Введите номер приоритета, доступные номера: ");
+        Console.WriteLine("1. Низкий приоритет");
+        Console.WriteLine("2. Средний приоритет");
+        Console.WriteLine("3. Высокий приоритет");
+
+        string? priorityInput = Console.ReadLine();
+
+        if (!int.TryParse(priorityInput, out int priorityNumber) ||
+            !Enum.IsDefined(typeof(TaskPriority), priorityNumber))
+        {
+            return null;
+        }
+
+        return (TaskPriority)priorityNumber;
+    }
+
+    private int? GetTaskId(string message = "Введите Id задачи: ")
+    {
+        Console.WriteLine(message);
         string? input = Console.ReadLine();
 
         if (int.TryParse(input, out int id))
