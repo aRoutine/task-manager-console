@@ -1,15 +1,16 @@
 using TaskManager.Services;
 using TaskManager.Models;
 using TaskManager.Results;
+using TaskManager.Interfaces;
 
 namespace TaskManager.UI;
 
 public class TaskConsoleApp
 {
-    private readonly TaskService _taskService;
-    private readonly ConsoleTaskPrinter _taskPrinter;
+    private readonly ITaskService _taskService;
+    private readonly ITaskPrinter _taskPrinter;
 
-    public TaskConsoleApp(TaskService taskService, ConsoleTaskPrinter taskPrinter)
+    public TaskConsoleApp(ITaskService taskService, ITaskPrinter taskPrinter)
     {
         _taskService = taskService;
         _taskPrinter = taskPrinter;

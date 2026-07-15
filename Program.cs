@@ -1,8 +1,9 @@
-﻿using TaskManager.Services;
+﻿using TaskManager.Interfaces;
+using TaskManager.Services;
 using TaskManager.UI;
 
-TaskService taskService = new TaskService();
-ConsoleTaskPrinter taskPrinter = new ConsoleTaskPrinter();
+ITaskService taskService = new TaskService();
+ITaskPrinter taskPrinter = new ConsoleTaskPrinter();
 
 TaskConsoleApp app = new TaskConsoleApp(taskService, taskPrinter);
 

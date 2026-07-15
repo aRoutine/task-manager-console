@@ -1,8 +1,9 @@
+using TaskManager.Interfaces;
 using TaskManager.Models;
 
 namespace TaskManager.UI;
 
-public class ConsoleTaskPrinter
+public class ConsoleTaskPrinter: ITaskPrinter
 {
     public void PrintTasks(List<TaskItem> tasks)
     {

@@ -1,10 +1,10 @@
-using System.Net.Http.Json;
 using System.Text.Json;
+using TaskManager.Interfaces;
 using TaskManager.Models;
 
 namespace TaskManager.Storage;
 
-public class TaskStorage
+public class TaskStorage: ITaskStorage
 {
     private readonly string _tasksPath = "tasks.json";
 

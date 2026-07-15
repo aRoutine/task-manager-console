@@ -1,10 +1,11 @@
 using TaskManager.Models;
 using TaskManager.Storage;
 using TaskManager.Results;
+using TaskManager.Interfaces;
 
 namespace TaskManager.Services;
 
-public class TaskService
+public class TaskService: ITaskService
 {
     private readonly TaskStorage _taskStorage = new();
     private readonly List<TaskItem> _tasks;
