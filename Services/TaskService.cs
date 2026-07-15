@@ -44,7 +44,7 @@ public class TaskService
         .ToList();
     }
 
-    public List<TaskItem> GetCompleteTasks()
+    public List<TaskItem> GetCompletedTasks()
     {
         return _tasks
         .Where(t => t.IsComplete)
@@ -62,7 +62,7 @@ public class TaskService
         .ToList();
     }
 
-    public List<TaskItem> GetHighPriopityTasks()
+    public List<TaskItem> GetHighPriorityTasks()
     {
         return _tasks
         .Where(t => t.TaskPriority == TaskPriority.High)
