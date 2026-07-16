@@ -4,7 +4,7 @@ using TaskManager.Models;
 
 namespace TaskManager.Storage;
 
-public class TaskStorage: ITaskStorage
+public class TaskStorage : ITaskStorage
 {
     private readonly string _tasksPath = "tasks.json";
 
@@ -25,7 +25,7 @@ public class TaskStorage: ITaskStorage
         List<TaskItem>? tasks = JsonSerializer.Deserialize<List<TaskItem>>(json);
 
         return tasks ?? new List<TaskItem>();
-    } 
+    }
 
     public void SaveTasks(List<TaskItem> tasks)
     {

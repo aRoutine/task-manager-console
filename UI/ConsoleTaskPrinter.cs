@@ -3,7 +3,7 @@ using TaskManager.Models;
 
 namespace TaskManager.UI;
 
-public class ConsoleTaskPrinter: ITaskPrinter
+public class ConsoleTaskPrinter : ITaskPrinter
 {
     public void PrintTasks(List<TaskItem> tasks)
     {

@@ -5,14 +5,16 @@ using TaskManager.Interfaces;
 
 namespace TaskManager.Services;
 
-public class TaskService: ITaskService
+public class TaskService : ITaskService
 {
-    private readonly TaskStorage _taskStorage = new();
+    private readonly ITaskStorage _taskStorage;
     private readonly List<TaskItem> _tasks;
     private int _nextId = 1;
 
-    public TaskService()
+    public TaskService(ITaskStorage taskStorage)
     {
+        _taskStorage = taskStorage;
+
         _tasks = _taskStorage.LoadTasks();
 
         if (_tasks.Count > 0)
