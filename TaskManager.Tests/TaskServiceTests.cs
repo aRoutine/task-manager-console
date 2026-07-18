@@ -12,10 +12,10 @@ public class TaskServiceTests
     {
         // Arrange
         FakeTaskStorage fakeStorage = new FakeTaskStorage();
-        TaskService fakeService = new TaskService(fakeStorage);
+        TaskService service = new TaskService(fakeStorage);
 
         // Act
-        var result = fakeService.AddTask("valid name", TaskPriority.Medium);
+        var result = service.AddTask("valid name", TaskPriority.Medium);
 
         // Assert
         Assert.True(result.Success);
@@ -72,7 +72,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void CompleteTask_WithAlreadyComplitedTask_ShouldReturnFail()
+    public void CompleteTask_WithAlreadyCompletedTask_ShouldReturnFail()
     {
         //Arrange
         FakeTaskStorage storage = new FakeTaskStorage();
@@ -89,7 +89,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void CompleteTask_WithUnknownId_ShouldReturnfail()
+    public void CompleteTask_WithUnknownId_ShouldReturnFail()
     {
         //Arrange
         FakeTaskStorage storage = new FakeTaskStorage();
