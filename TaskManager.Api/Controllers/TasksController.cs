@@ -28,15 +28,16 @@ public class TasksController : ControllerBase
     private static List<TaskResponse> MapToResponseList(List<TaskItem> tasks)
     {
         return tasks.
-        Select(MapToResponse)
-        .ToList();
+            Select(MapToResponse)
+            .ToList();
     }
 
     private static TaskOperationResponse MapToOperationResponse(TaskOperationResult response)
     {
-        return new TaskOperationResponse{
-          Message = response.Message,
-          Success = response.Success  
+        return new TaskOperationResponse
+        {
+            Message = response.Message,
+            Success = response.Success
         };
     }
 
@@ -46,25 +47,25 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<TaskItem>> GetTasks()
+    public ActionResult<List<TaskResponse>> GetTasks()
     {
         return Ok(MapToResponseList(_taskService.GetTasks()));
     }
 
     [HttpGet("completed")]
-    public ActionResult<List<TaskItem>> GetCompletedTasks()
+    public ActionResult<List<TaskResponse>> GetCompletedTasks()
     {
         return Ok(MapToResponseList(_taskService.GetCompletedTasks()));
     }
 
     [HttpGet("not-completed")]
-    public ActionResult<List<TaskItem>> GetNotCompletedTasks()
+    public ActionResult<List<TaskResponse>> GetNotCompletedTasks()
     {
         return Ok(MapToResponseList(_taskService.GetNotCompletedTasks()));
     }
 
     [HttpGet("high-priority")]
-    public ActionResult<List<TaskItem>> GetHighPriorityTasks()
+    public ActionResult<List<TaskResponse>> GetHighPriorityTasks()
     {
         return Ok(MapToResponseList(_taskService.GetHighPriorityTasks()));
     }
@@ -123,7 +124,7 @@ public class TasksController : ControllerBase
 
         if (!result.Success)
         {
-            return BadRequest(response);
+            return NotFound(response);
         }
 
         return Ok(response);
