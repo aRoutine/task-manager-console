@@ -13,6 +13,33 @@ public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
 
+    private static TaskResponse MapToResponse(TaskItem task)
+    {
+        return new TaskResponse
+        {
+            Id = task.Id,
+            Title = task.Title,
+            IsComplete = task.IsComplete,
+            CreatedAt = task.CreatedAt,
+            TaskPriority = task.TaskPriority
+        };
+    }
+
+    private static List<TaskResponse> MapToResponseList(List<TaskItem> tasks)
+    {
+        return tasks.
+        Select(MapToResponse)
+        .ToList();
+    }
+
+    private static TaskOperationResponse MapToOperationResponse(TaskOperationResult response)
+    {
+        return new TaskOperationResponse{
+          Message = response.Message,
+          Success = response.Success  
+        };
+    }
+
     public TasksController(ITaskService taskService)
     {
         _taskService = taskService;
@@ -21,25 +48,25 @@ public class TasksController : ControllerBase
     [HttpGet]
     public ActionResult<List<TaskItem>> GetTasks()
     {
-        return Ok(_taskService.GetTasks());
+        return Ok(MapToResponseList(_taskService.GetTasks()));
     }
 
     [HttpGet("completed")]
     public ActionResult<List<TaskItem>> GetCompletedTasks()
     {
-        return Ok(_taskService.GetCompletedTasks());
+        return Ok(MapToResponseList(_taskService.GetCompletedTasks()));
     }
 
     [HttpGet("not-completed")]
     public ActionResult<List<TaskItem>> GetNotCompletedTasks()
     {
-        return Ok(_taskService.GetNotCompletedTasks());
+        return Ok(MapToResponseList(_taskService.GetNotCompletedTasks()));
     }
 
     [HttpGet("high-priority")]
     public ActionResult<List<TaskItem>> GetHighPriorityTasks()
     {
-        return Ok(_taskService.GetHighPriorityTasks());
+        return Ok(MapToResponseList(_taskService.GetHighPriorityTasks()));
     }
 
     [HttpPost]
@@ -47,12 +74,14 @@ public class TasksController : ControllerBase
     {
         TaskOperationResult result = _taskService.AddTask(request.Title, request.Priority);
 
+        TaskOperationResponse response = MapToOperationResponse(result);
+
         if (!result.Success)
         {
-            return BadRequest(result.Message);
+            return BadRequest(response);
         }
 
-        return Created("api/tasks", result.Message);
+        return Created("api/tasks", response);
     }
 
     [HttpPut("{id:int}/complete")]
@@ -60,12 +89,14 @@ public class TasksController : ControllerBase
     {
         TaskOperationResult result = _taskService.CompleteTask(id);
 
+        TaskOperationResponse response = MapToOperationResponse(result);
+
         if (!result.Success)
         {
-            return BadRequest(result.Message);
+            return BadRequest(response);
         }
 
-        return Ok(result.Message);
+        return Ok(response);
     }
 
     [HttpPut("{id:int}/rename")]
@@ -73,12 +104,14 @@ public class TasksController : ControllerBase
     {
         TaskOperationResult result = _taskService.RenameTask(id, request.Title);
 
+        TaskOperationResponse response = MapToOperationResponse(result);
+
         if (!result.Success)
         {
-            return BadRequest(result.Message);
+            return BadRequest(response);
         }
 
-        return Ok(result.Message);
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
@@ -86,11 +119,13 @@ public class TasksController : ControllerBase
     {
         TaskOperationResult result = _taskService.DeleteTask(id);
 
+        TaskOperationResponse response = MapToOperationResponse(result);
+
         if (!result.Success)
         {
-            return BadRequest(result.Message);
+            return BadRequest(response);
         }
 
-        return Ok(result.Message);
+        return Ok(response);
     }
 }
