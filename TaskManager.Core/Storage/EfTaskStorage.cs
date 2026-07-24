@@ -3,6 +3,7 @@ using TaskManager.Data;
 using TaskManager.Interfaces;
 using TaskManager.Models;
 
+namespace TaskManager.Storage;
 public class EfTaskStorage : ITaskStorage
 {
     private TaskManagerDbContext _dbContext;

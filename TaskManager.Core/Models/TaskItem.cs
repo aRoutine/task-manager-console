@@ -14,7 +14,7 @@ public class TaskItem
         Title = title;
         IsComplete = false;
         TaskPriority = taskPriority;
-        CreatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
     }
 
     public TaskItem()
