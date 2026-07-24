@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using TaskManager.Data;
 using TaskManager.Interfaces;
 using TaskManager.Services;
 using TaskManager.Storage;
@@ -9,8 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ITaskStorage, TaskStorage>();
-builder.Services.AddSingleton<ITaskService, TaskService>();
+builder.Services.AddDbContext<TaskManagerDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddScoped<ITaskStorage, EfTaskStorage>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 
