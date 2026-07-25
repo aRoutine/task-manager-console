@@ -11,8 +11,8 @@ public class TaskServiceTests
     public void AddTask_WithValidTitle_ShouldReturnSuccess()
     {
         // Arrange
-        FakeTaskStorage fakeStorage = new FakeTaskStorage();
-        TaskService service = new TaskService(fakeStorage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         // Act
         var result = service.AddTask("valid name", TaskPriority.Medium);
@@ -20,15 +20,15 @@ public class TaskServiceTests
         // Assert
         Assert.True(result.Success);
         Assert.Equal("Задача успешно добавлена", result.Message);
-        Assert.Equal(1, fakeStorage.SaveCallCount);
+        Assert.Equal(1, fakeTaskRepository.SaveCallCount);
     }
 
     [Fact]
     public void AddTask_WithEmptyTitle_ShouldReturnFail()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
         var result = service.AddTask("", TaskPriority.Medium);
@@ -36,15 +36,15 @@ public class TaskServiceTests
         //Assert
         Assert.False(result.Success);
         Assert.Equal("Название задачи не может быть пустым", result.Message);
-        Assert.Equal(0, storage.SaveCallCount);
+        Assert.Equal(0, fakeTaskRepository.SaveCallCount);
     }
 
     [Fact]
     public void DeleteTask_WithUnknownId_ShouldReturnFalse()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
         var result = service.DeleteTask(3);
@@ -52,15 +52,15 @@ public class TaskServiceTests
         //Assert
         Assert.False(result.Success);
         Assert.Equal("Задача по заданному Id не была найдена в базе данных", result.Message);
-        Assert.Equal(0, storage.SaveCallCount);
+        Assert.Equal(0, fakeTaskRepository.SaveCallCount);
     }
 
     [Fact]
     public void CompleteTask_WithExistingTask_ShouldReturnSuccess()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
         service.AddTask("valid name", TaskPriority.Low);
 
         //Act
@@ -75,8 +75,8 @@ public class TaskServiceTests
     public void CompleteTask_WithAlreadyCompletedTask_ShouldReturnFail()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
         service.AddTask("valid name", TaskPriority.Low);
         service.CompleteTask(1);
 
@@ -92,8 +92,8 @@ public class TaskServiceTests
     public void CompleteTask_WithUnknownId_ShouldReturnFail()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
         var result = service.CompleteTask(3);
@@ -107,8 +107,8 @@ public class TaskServiceTests
     public void GetTasks_ShouldReturnTasksSortedByPriority()
     {
         //Arrange
-        FakeTaskStorage storage = new FakeTaskStorage();
-        TaskService service = new TaskService(storage);
+        FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
+        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         service.AddTask("Важное задание", TaskPriority.High);
         service.AddTask("Неважное задание", TaskPriority.Low);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Api.Tests.Fakes;
 using TaskManager.Interfaces;
+using TaskManager.Tests.Fakes;
 
 namespace TaskManager.Api.Tests;
 
@@ -13,14 +14,14 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             ServiceDescriptor? taskStorageDescriptor = services.FirstOrDefault(
-                service => service.ServiceType == typeof(ITaskStorage));
+                service => service.ServiceType == typeof(ITaskRepository));
 
             if (taskStorageDescriptor is not null)
             {
                 services.Remove(taskStorageDescriptor);
             }
 
-            services.AddSingleton<ITaskStorage, FakeTaskStorage>();
+            services.AddSingleton<ITaskRepository, FakeTaskRepository>();
         });
     }
 }

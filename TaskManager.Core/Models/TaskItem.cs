@@ -8,9 +8,8 @@ public class TaskItem
     public TaskPriority TaskPriority { get; set; }
     public DateTime CreatedAt { get; set; }
 
-    public TaskItem(int id, string title, TaskPriority taskPriority)
+    public TaskItem(string title, TaskPriority taskPriority)
     {
-        Id = id;
         Title = title;
         IsComplete = false;
         TaskPriority = taskPriority;

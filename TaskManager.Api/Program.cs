@@ -16,7 +16,7 @@ builder.Services.AddDbContext<TaskManagerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<ITaskStorage, EfTaskStorage>();
+builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
