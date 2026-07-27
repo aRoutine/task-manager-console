@@ -16,7 +16,7 @@ public class TaskConsoleApp
         _taskPrinter = taskPrinter;
     }
 
-    public void Run()
+    public async Task Run()
     {
         while (true)
         {
@@ -29,23 +29,23 @@ public class TaskConsoleApp
             switch (input)
             {
                 case "1":
-                    AddTask();
+                    await AddTask();
                     break;
 
                 case "2":
-                    ShowTasks();
+                    await ShowTasks();
                     break;
 
                 case "3":
-                    DeleteTask();
+                    await DeleteTask();
                     break;
 
                 case "4":
-                    CompleteTask();
+                    await CompleteTask();
                     break;
 
                 case "5":
-                    RenameTask();
+                    await RenameTask();
                     break;
 
                 case "0":
@@ -72,7 +72,7 @@ public class TaskConsoleApp
         Console.Write("Выберите действие: ");
     }
 
-    private void AddTask()
+    private async Task AddTask()
     {
         Console.WriteLine("Пожалуйста, введите краткое описание задачи: ");
         string? title = Console.ReadLine();
@@ -91,11 +91,11 @@ public class TaskConsoleApp
             return;
         }
 
-        TaskOperationResult addResult = _taskService.AddTask(title, priority.Value);
+        TaskOperationResult addResult = await _taskService.AddTaskAsync(title, priority.Value);
         Console.WriteLine(addResult.Message);
     }
 
-    private void ShowTasks()
+    private async Task ShowTasks()
     {
         Console.WriteLine("Укажите какие задачи вас интересуют: ");
         Console.WriteLine("1. Все задачи");
@@ -109,25 +109,29 @@ public class TaskConsoleApp
         {
             if (filterNum == 1)
             {
-                _taskPrinter.PrintTasks(_taskService.GetTasks());
+                List<TaskItem>? tasks = await _taskService.GetTasksAsync();
+                _taskPrinter.PrintTasks(tasks);
                 return;
             }
 
             if (filterNum == 2)
             {
-                _taskPrinter.PrintTasks(_taskService.GetCompletedTasks());
+                List<TaskItem>? tasks = await _taskService.GetCompletedTasksAsync();
+                _taskPrinter.PrintTasks(tasks);
                 return;
             }
 
             if (filterNum == 3)
             {
-                _taskPrinter.PrintTasks(_taskService.GetNotCompletedTasks());
+                List<TaskItem>? tasks = await _taskService.GetNotCompletedTasksAsync();
+                _taskPrinter.PrintTasks(tasks);
                 return;
             }
 
             if (filterNum == 4)
             {
-                _taskPrinter.PrintTasks(_taskService.GetHighPriorityTasks());
+                List<TaskItem>? tasks = await _taskService.GetHighPriorityTasksAsync();
+                _taskPrinter.PrintTasks(tasks);
                 return;
             }
 
@@ -141,7 +145,7 @@ public class TaskConsoleApp
         }
     }
 
-    private void DeleteTask()
+    private async Task DeleteTask()
     {
         int? id = GetTaskId();
 
@@ -151,11 +155,11 @@ public class TaskConsoleApp
             return;
         }
 
-        TaskOperationResult result = _taskService.DeleteTask(id.Value);
+        TaskOperationResult result = await _taskService.DeleteTaskAsync(id.Value);
         Console.WriteLine(result.Message);
     }
 
-    private void CompleteTask()
+    private async Task CompleteTask()
     {
         int? id = GetTaskId();
 
@@ -165,11 +169,11 @@ public class TaskConsoleApp
             return;
         }
 
-        TaskOperationResult result = _taskService.CompleteTask(id.Value);
+        TaskOperationResult result = await _taskService.CompleteTaskAsync(id.Value);
         Console.WriteLine(result.Message);
     }
 
-    private void RenameTask()
+    private async Task RenameTask()
     {
         int? id = GetTaskId("Введите ID задачи, которую хотите редактировать: ");
 
@@ -188,7 +192,7 @@ public class TaskConsoleApp
             return;
         }
 
-        TaskOperationResult result = _taskService.RenameTask(id.Value, newTitle);
+        TaskOperationResult result = await _taskService.RenameTaskAsync(id.Value, newTitle);
         Console.WriteLine(result.Message);
     }
 

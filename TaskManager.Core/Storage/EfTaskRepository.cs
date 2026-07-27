@@ -14,31 +14,31 @@ public class EfTaskRepository : ITaskRepository
         _dbContext = dbContext;
     }
 
-    public void AddTask(TaskItem task)
+    public void Add(TaskItem task)
     {
         _dbContext.Tasks.Add(task);
     }
 
-    public void DeleteTask(TaskItem task)
+    public void Delete(TaskItem task)
     {
         _dbContext.Tasks.Remove(task);
     }
 
-    public List<TaskItem> GetAll()
+    public async Task<List<TaskItem>> GetAllAsync()
     {
-        return _dbContext.Tasks
+        return await _dbContext.Tasks
             .AsNoTracking()
-            .ToList();
+            .ToListAsync();
     }
 
-    public TaskItem? GetById(int id)
+    public async Task<TaskItem?> GetByIdAsync(int id)
     {
-        return _dbContext.Tasks.FirstOrDefault(t => t.Id == id);
+        return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
 
     public void Update(TaskItem task)

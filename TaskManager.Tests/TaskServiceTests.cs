@@ -8,14 +8,14 @@ namespace TaskManager.Tests;
 public class TaskServiceTests
 {
     [Fact]
-    public void AddTask_WithValidTitle_ShouldReturnSuccess()
+    public async Task AddTask_WithValidTitle_ShouldReturnSuccess()
     {
         // Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         // Act
-        var result = service.AddTask("valid name", TaskPriority.Medium);
+        var result = await service.AddTaskAsync("valid name", TaskPriority.Medium);
 
         // Assert
         Assert.True(result.Success);
@@ -24,14 +24,14 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void AddTask_WithEmptyTitle_ShouldReturnFail()
+    public async Task AddTask_WithEmptyTitle_ShouldReturnFail()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
-        var result = service.AddTask("", TaskPriority.Medium);
+        var result = await service.AddTaskAsync("", TaskPriority.Medium);
 
         //Assert
         Assert.False(result.Success);
@@ -40,14 +40,14 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void DeleteTask_WithUnknownId_ShouldReturnFalse()
+    public async Task DeleteTask_WithUnknownId_ShouldReturnFalse()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
-        var result = service.DeleteTask(3);
+        var result = await service.DeleteTaskAsync(3);
 
         //Assert
         Assert.False(result.Success);
@@ -56,15 +56,15 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void CompleteTask_WithExistingTask_ShouldReturnSuccess()
+    public async Task CompleteTask_WithExistingTask_ShouldReturnSuccess()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
-        service.AddTask("valid name", TaskPriority.Low);
+        await service.AddTaskAsync("valid name", TaskPriority.Low);
 
         //Act
-        var result = service.CompleteTask(1);
+        var result = await service.CompleteTaskAsync(1);
 
         //Assert
         Assert.True(result.Success);
@@ -72,16 +72,16 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void CompleteTask_WithAlreadyCompletedTask_ShouldReturnFail()
+    public async Task CompleteTask_WithAlreadyCompletedTask_ShouldReturnFail()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
-        service.AddTask("valid name", TaskPriority.Low);
-        service.CompleteTask(1);
+        await service.AddTaskAsync("valid name", TaskPriority.Low);
+        await service.CompleteTaskAsync(1);
 
         //Act
-        var result = service.CompleteTask(1);
+        var result = await service.CompleteTaskAsync(1);
 
         //Assert
         Assert.False(result.Success);
@@ -89,14 +89,14 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void CompleteTask_WithUnknownId_ShouldReturnFail()
+    public async Task CompleteTask_WithUnknownId_ShouldReturnFail()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
         //Act
-        var result = service.CompleteTask(3);
+        var result = await service.CompleteTaskAsync(3);
 
         //Assert
         Assert.False(result.Success);
@@ -104,18 +104,18 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public void GetTasks_ShouldReturnTasksSortedByPriority()
+    public async Task GetTasks_ShouldReturnTasksSortedByPriority()
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
         TaskService service = new TaskService(taskRepository: fakeTaskRepository);
 
-        service.AddTask("Важное задание", TaskPriority.High);
-        service.AddTask("Неважное задание", TaskPriority.Low);
-        service.AddTask("Обычное задание", TaskPriority.Medium);
+        await service.AddTaskAsync("Важное задание", TaskPriority.High);
+        await service.AddTaskAsync("Неважное задание", TaskPriority.Low);
+        await service.AddTaskAsync("Обычное задание", TaskPriority.Medium);
 
         //Act
-        var result = service.GetTasks();
+        var result = await service.GetTasksAsync();
 
         //Assert
         Assert.Equal(TaskPriority.High, result[0].TaskPriority);

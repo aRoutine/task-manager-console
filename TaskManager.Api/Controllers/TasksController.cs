@@ -3,7 +3,6 @@ using TaskManager.Api.Contracts;
 using TaskManager.Interfaces;
 using TaskManager.Models;
 using TaskManager.Results;
-using TaskManager.Services;
 
 namespace TaskManager.Api.Controllers;
 
@@ -47,33 +46,41 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<TaskResponse>> GetTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetTasks()
     {
-        return Ok(MapToResponseList(_taskService.GetTasks()));
+        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+
+        return Ok(MapToResponseList(tasks));
     }
 
     [HttpGet("completed")]
-    public ActionResult<List<TaskResponse>> GetCompletedTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetCompletedTasks()
     {
-        return Ok(MapToResponseList(_taskService.GetCompletedTasks()));
+        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+
+        return Ok(MapToResponseList(tasks));
     }
 
     [HttpGet("not-completed")]
-    public ActionResult<List<TaskResponse>> GetNotCompletedTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetNotCompletedTasks()
     {
-        return Ok(MapToResponseList(_taskService.GetNotCompletedTasks()));
+        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+
+        return Ok(MapToResponseList(tasks));
     }
 
     [HttpGet("high-priority")]
-    public ActionResult<List<TaskResponse>> GetHighPriorityTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetHighPriorityTasks()
     {
-        return Ok(MapToResponseList(_taskService.GetHighPriorityTasks()));
+        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+
+        return Ok(MapToResponseList(tasks));
     }
 
     [HttpPost]
-    public ActionResult CreateTask(CreateTaskRequest request)
+    public async Task<ActionResult> CreateTask(CreateTaskRequest request)
     {
-        TaskOperationResult result = _taskService.AddTask(request.Title, request.Priority);
+        TaskOperationResult result = await _taskService.AddTaskAsync(request.Title, request.Priority);
 
         TaskOperationResponse response = MapToOperationResponse(result);
 
@@ -86,9 +93,9 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id:int}/complete")]
-    public ActionResult CompleteTask(int id)
+    public async Task<ActionResult> CompleteTask(int id)
     {
-        TaskOperationResult result = _taskService.CompleteTask(id);
+        TaskOperationResult result = await _taskService.CompleteTaskAsync(id);
 
         TaskOperationResponse response = MapToOperationResponse(result);
 
@@ -101,9 +108,9 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id:int}/rename")]
-    public ActionResult RenameTask(int id, RenameTaskRequest request)
+    public async Task<ActionResult> RenameTask(int id, RenameTaskRequest request)
     {
-        TaskOperationResult result = _taskService.RenameTask(id, request.Title);
+        TaskOperationResult result = await _taskService.RenameTaskAsync(id, request.Title);
 
         TaskOperationResponse response = MapToOperationResponse(result);
 
@@ -116,9 +123,9 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public ActionResult DeleteTask(int id)
+    public async Task<ActionResult> DeleteTask(int id)
     {
-        TaskOperationResult result = _taskService.DeleteTask(id);
+        TaskOperationResult result = await _taskService.DeleteTaskAsync(id);
 
         TaskOperationResponse response = MapToOperationResponse(result);
 

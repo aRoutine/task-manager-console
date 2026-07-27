@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Api.Tests.Fakes;
 using TaskManager.Interfaces;
-using TaskManager.Tests.Fakes;
 
 namespace TaskManager.Api.Tests;
 

@@ -8,7 +8,7 @@ public class FakeTaskRepository : ITaskRepository
     private readonly List<TaskItem> _tasks = new List<TaskItem>();
     public int SaveCallCount { get; private set; }
 
-    public void AddTask(TaskItem task)
+    public void Add(TaskItem task)
     {
         int nextId = _tasks.Count == 0 
         ? 1 
@@ -19,24 +19,26 @@ public class FakeTaskRepository : ITaskRepository
         _tasks.Add(task);
     }
 
-    public void DeleteTask(TaskItem task)
+    public void Delete(TaskItem task)
     {
         _tasks.Remove(task);
     }
 
-    public List<TaskItem> GetAll()
+    public Task<List<TaskItem>> GetAllAsync()
     {
-        return _tasks.ToList();
+        return Task.FromResult(_tasks.ToList());
     }
 
-    public TaskItem? GetById(int id)
+    public Task<TaskItem?> GetByIdAsync(int id)
     {
-        return _tasks.FirstOrDefault(t => t.Id == id);
+        return Task.FromResult(_tasks.FirstOrDefault(t => t.Id == id));
     }
 
-    public void SaveChanges()
+    public Task SaveChangesAsync()
     {
         SaveCallCount++;
+        
+        return Task.CompletedTask;
     }
 
     public void Update(TaskItem task)

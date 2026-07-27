@@ -13,17 +13,17 @@ public class JsonTaskRepository : ITaskRepository
         _tasks = _taskStorage.LoadTasks();
     }
 
-    public List<TaskItem> GetAll()
+    public Task<List<TaskItem>> GetAllAsync()
     {
-        return _tasks.ToList();
+        return Task.FromResult(_tasks.ToList());
     }
 
-    public TaskItem? GetById(int id)
+    public Task<TaskItem?> GetByIdAsync(int id)
     {
-        return _tasks.FirstOrDefault(task => task.Id == id);
+        return Task.FromResult(_tasks.FirstOrDefault(task => task.Id == id));
     }
 
-    public void AddTask(TaskItem task)
+    public void Add(TaskItem task)
     {
         int nextId = _tasks.Count == 0
             ? 1
@@ -39,13 +39,15 @@ public class JsonTaskRepository : ITaskRepository
         
     }
 
-    public void DeleteTask(TaskItem task)
+    public void Delete(TaskItem task)
     {
         _tasks.Remove(task);
     }
 
-    public void SaveChanges()
+    public Task SaveChangesAsync()
     {
         _taskStorage.SaveTasks(_tasks);
+
+        return Task.CompletedTask;
     }
 }

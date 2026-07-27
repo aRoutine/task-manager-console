@@ -1,5 +1,4 @@
 using TaskManager.Models;
-using TaskManager.Storage;
 using TaskManager.Results;
 using TaskManager.Interfaces;
 
@@ -14,7 +13,7 @@ public class TaskService : ITaskService
         _taskRepository = taskRepository;
     }
 
-    public TaskOperationResult AddTask(string title, TaskPriority taskPriority)
+    public async Task<TaskOperationResult> AddTaskAsync(string title, TaskPriority taskPriority)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -29,50 +28,58 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.UtcNow
         };
 
-        _taskRepository.AddTask(newTaskItem);
+        _taskRepository.Add(newTaskItem);
 
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Задача успешно добавлена");
     }
 
-    public List<TaskItem> GetTasks()
+    public async Task<List<TaskItem>> GetTasksAsync()
     {
-        return _taskRepository.GetAll()
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+
+        return tasks
         .OrderByDescending(t => t.TaskPriority)
         .ThenBy(t => t.CreatedAt)
         .ToList();
     }
 
-    public List<TaskItem> GetCompletedTasks()
+    public async Task<List<TaskItem>> GetCompletedTasksAsync()
     {
-        return _taskRepository.GetAll()
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+
+        return tasks
         .Where(t => t.IsComplete)
         .OrderByDescending(t => t.TaskPriority)
         .ThenBy(t => t.CreatedAt)
         .ToList();
     }
 
-    public List<TaskItem> GetNotCompletedTasks()
+    public async Task<List<TaskItem>> GetNotCompletedTasksAsync()
     {
-        return _taskRepository.GetAll()
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+
+        return tasks
         .Where(t => !t.IsComplete)
         .OrderByDescending(t => t.TaskPriority)
         .ThenBy(t => t.CreatedAt)
         .ToList();
     }
 
-    public List<TaskItem> GetHighPriorityTasks()
+    public async Task<List<TaskItem>> GetHighPriorityTasksAsync()
     {
-        return _taskRepository.GetAll()
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+
+        return tasks
         .Where(t => t.TaskPriority == TaskPriority.High)
         .OrderBy(t => t.CreatedAt)
         .ToList();
     }
 
-    public TaskOperationResult CompleteTask(int id)
+    public async Task<TaskOperationResult> CompleteTaskAsync(int id)
     {
-        TaskItem? taskItem = _taskRepository.GetById(id);
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
 
         if (taskItem == null)
         {
@@ -86,31 +93,31 @@ public class TaskService : ITaskService
 
         taskItem.IsComplete = true;
 
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Задача успешно выполнена");
     }
 
-    public TaskOperationResult DeleteTask(int id)
+    public async Task<TaskOperationResult> DeleteTaskAsync(int id)
     {
-        TaskItem? taskItem = _taskRepository.GetById(id);
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
 
         if (taskItem == null)
         {
             return TaskOperationResult.Fail("Задача по заданному Id не была найдена в базе данных");
         }
 
-        _taskRepository.DeleteTask(taskItem);
+        _taskRepository.Delete(taskItem);
 
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Задача успешно удалена");
 
     }
 
-    public TaskOperationResult RenameTask(int id, string title)
+    public async Task<TaskOperationResult> RenameTaskAsync(int id, string title)
     {
-        TaskItem? taskItem = _taskRepository.GetById(id);
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
 
         if (taskItem == null)
         {
@@ -126,7 +133,7 @@ public class TaskService : ITaskService
 
         _taskRepository.Update(taskItem);
 
-        _taskRepository.SaveChanges();
+        await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Описание успешно изменено");
     }

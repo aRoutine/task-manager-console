@@ -5,19 +5,19 @@ namespace TaskManager.Interfaces;
 
 public interface ITaskService
 {
-    TaskOperationResult AddTask(string title, TaskPriority taskPriority);
+    Task<TaskOperationResult> AddTaskAsync(string title, TaskPriority taskPriority);
 
-    List<TaskItem> GetTasks();
+    Task<List<TaskItem>> GetTasksAsync();
 
-    List<TaskItem> GetCompletedTasks();
+    Task<List<TaskItem>> GetCompletedTasksAsync();
 
-    List<TaskItem> GetNotCompletedTasks();
+    Task<List<TaskItem>> GetNotCompletedTasksAsync();
 
-    List<TaskItem> GetHighPriorityTasks();
+    Task<List<TaskItem>> GetHighPriorityTasksAsync();
 
-    TaskOperationResult CompleteTask(int id);
+    Task<TaskOperationResult> CompleteTaskAsync(int id);
 
-    TaskOperationResult DeleteTask(int id);
+    Task<TaskOperationResult> DeleteTaskAsync(int id);
 
-    TaskOperationResult RenameTask(int id, string title);
+    Task<TaskOperationResult> RenameTaskAsync(int id, string title);
 }
