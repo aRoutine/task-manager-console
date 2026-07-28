@@ -20,7 +20,7 @@ public class TaskService : ITaskService
             return TaskOperationResult.Fail("Название задачи не может быть пустым");
         }
 
-        TaskItem newTaskItem = new TaskItem
+        TaskItem task = new TaskItem
         {
             Title = title,
             TaskPriority = taskPriority,
@@ -28,11 +28,11 @@ public class TaskService : ITaskService
             CreatedAt = DateTime.UtcNow
         };
 
-        _taskRepository.Add(newTaskItem);
+        _taskRepository.Add(task);
 
         await _taskRepository.SaveChangesAsync();
 
-        return TaskOperationResult.Ok("Задача успешно добавлена");
+        return TaskOperationResult.Ok("Задача успешно добавлена", task.Id);
     }
 
     public async Task<List<TaskItem>> GetTasksAsync()
@@ -136,5 +136,10 @@ public class TaskService : ITaskService
         await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Описание успешно изменено");
+    }
+
+    public async Task<TaskItem?> GetTaskByIdAsync(int id)
+    {
+        return await _taskRepository.GetByIdAsync(id);
     }
 }

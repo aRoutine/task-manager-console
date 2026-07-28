@@ -44,8 +44,8 @@ public class TasksApiTests
 
         CreateTaskRequest request = new CreateTaskRequest
         {
-          Title = "",
-          Priority = TaskPriority.Low  
+            Title = "",
+            Priority = TaskPriority.Low
         };
 
         HttpResponseMessage response = await client.PostAsJsonAsync("/api/tasks", request);
@@ -63,5 +63,37 @@ public class TasksApiTests
         HttpResponseMessage response = await client.GetAsync("/api/tasks");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTaskById_WithExistingId_ShouldReturnOk()
+    {
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        CreateTaskRequest request = new CreateTaskRequest
+        {
+            Title = "correct title",
+            Priority = TaskPriority.Medium
+        };
+
+        await client.PostAsJsonAsync("/api/tasks", request);
+
+        HttpResponseMessage response = await client.GetAsync("/api/tasks/1");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTaskById_WithUnknownId_ShouldReturnNotFound()
+    {
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        HttpResponseMessage response = await client.GetAsync("/api/tasks/9999");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

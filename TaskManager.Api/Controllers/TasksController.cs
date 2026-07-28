@@ -31,12 +31,13 @@ public class TasksController : ControllerBase
             .ToList();
     }
 
-    private static TaskOperationResponse MapToOperationResponse(TaskOperationResult response)
+    private static TaskOperationResponse MapToOperationResponse(TaskOperationResult result)
     {
         return new TaskOperationResponse
         {
-            Message = response.Message,
-            Success = response.Success
+            Message = result.Message,
+            Success = result.Success,
+            TaskId = result.TaskId
         };
     }
 
@@ -51,6 +52,23 @@ public class TasksController : ControllerBase
         List<TaskItem> tasks = await _taskService.GetTasksAsync();
 
         return Ok(MapToResponseList(tasks));
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<TaskResponse>> GetTaskById(int id)
+    {
+        TaskItem? task = await _taskService.GetTaskByIdAsync(id);
+
+        if (task == null)
+        {
+            return NotFound(new TaskOperationResponse
+            {
+                Success = false,
+                Message = "Задача по заданному id не найдена"
+            });
+        }
+
+        return Ok(MapToResponse(task));
     }
 
     [HttpGet("completed")]
@@ -89,7 +107,11 @@ public class TasksController : ControllerBase
             return BadRequest(response);
         }
 
-        return Created("api/tasks", response);
+        return CreatedAtAction(
+            nameof(GetTaskById),
+            new {id = response.TaskId},
+            response
+        );
     }
 
     [HttpPut("{id:int}/complete")]
