@@ -45,30 +45,27 @@ public class TaskService : ITaskService
         .ToList();
     }
 
-     public async Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search)
+    public async Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search)
     {
         List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
-        
+
         if (isComplete != null)
         {
-            return tasks
+            tasks = tasks
             .Where(t => t.IsComplete == isComplete)
-            .OrderByDescending(t => t.TaskPriority)
-            .ThenBy(t => t.CreatedAt)
             .ToList();
         }
 
         if (priority != null)
         {
-            return tasks
+            tasks = tasks
             .Where(t => t.TaskPriority == priority)
-            .OrderBy(t => t.CreatedAt)
             .ToList();
         }
 
         if (search != null)
         {
-            return tasks
+            tasks = tasks
             .Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase))
             .ToList();
         }

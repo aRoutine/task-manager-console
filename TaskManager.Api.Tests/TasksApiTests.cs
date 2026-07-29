@@ -118,14 +118,14 @@ public class TasksApiTests
             Priority = TaskPriority.High
         };
 
-        await client.PostAsJsonAsync("api/tasks", request1);
+        await client.PostAsJsonAsync("api/tasks", request2);
 
         await client.PutAsync("api/tasks/1/complete", null);
 
         List<TaskResponse>? tasks = await client.GetFromJsonAsync<List<TaskResponse>>("/api/tasks?isComplete=false");
 
         Assert.NotNull(tasks);
-        Assert.NotEmpty(tasks);
+        Assert.Single(tasks);
         Assert.False(tasks[0].IsComplete);
         Assert.Equal("target", tasks[0].Title);
     }

@@ -78,7 +78,7 @@ public class TasksController : ControllerBase
     [HttpGet("completed")]
     public async Task<ActionResult<List<TaskResponse>>> GetCompletedTasks()
     {
-        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+        List<TaskItem> tasks = await _taskService.GetCompletedTasksAsync();
 
         return Ok(MapToResponseList(tasks));
     }
@@ -86,7 +86,7 @@ public class TasksController : ControllerBase
     [HttpGet("not-completed")]
     public async Task<ActionResult<List<TaskResponse>>> GetNotCompletedTasks()
     {
-        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+        List<TaskItem> tasks = await _taskService.GetNotCompletedTasksAsync();
 
         return Ok(MapToResponseList(tasks));
     }
@@ -94,7 +94,7 @@ public class TasksController : ControllerBase
     [HttpGet("high-priority")]
     public async Task<ActionResult<List<TaskResponse>>> GetHighPriorityTasks()
     {
-        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+        List<TaskItem> tasks = await _taskService.GetHighPriorityTasksAsync();
 
         return Ok(MapToResponseList(tasks));
     }
