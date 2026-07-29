@@ -47,9 +47,13 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TaskResponse>>> GetTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetTasks([FromQuery] TaskFilterRequest request)
     {
-        List<TaskItem> tasks = await _taskService.GetTasksAsync();
+        List<TaskItem> tasks = await _taskService.GetTasksAsync(
+            isComplete: request.IsComplete,
+            priority: request.Priority,
+            search: request.Search
+        );
 
         return Ok(MapToResponseList(tasks));
     }

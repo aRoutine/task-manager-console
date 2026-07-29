@@ -6,7 +6,11 @@ namespace TaskManager.Interfaces;
 public interface ITaskService
 {
     Task<TaskOperationResult> AddTaskAsync(string title, TaskPriority taskPriority);
+    
     Task<TaskItem?> GetTaskByIdAsync(int id);
+
+    Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search);
+
     Task<List<TaskItem>> GetTasksAsync();
 
     Task<List<TaskItem>> GetCompletedTasksAsync();

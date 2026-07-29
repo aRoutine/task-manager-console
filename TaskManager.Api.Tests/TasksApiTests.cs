@@ -96,4 +96,37 @@ public class TasksApiTests
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GetTasks_WithIsCompleteFalse_ShouldReturnOnlyNotCompletedTasks()
+    {
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        CreateTaskRequest request1 = new CreateTaskRequest
+        {
+            Title = "correct title",
+            Priority = TaskPriority.High
+        };
+
+        await client.PostAsJsonAsync("api/tasks", request1);
+
+        CreateTaskRequest request2 = new CreateTaskRequest
+        {
+            Title = "target",
+            Priority = TaskPriority.High
+        };
+
+        await client.PostAsJsonAsync("api/tasks", request1);
+
+        await client.PutAsync("api/tasks/1/complete", null);
+
+        List<TaskResponse>? tasks = await client.GetFromJsonAsync<List<TaskResponse>>("/api/tasks?isComplete=false");
+
+        Assert.NotNull(tasks);
+        Assert.NotEmpty(tasks);
+        Assert.False(tasks[0].IsComplete);
+        Assert.Equal("target", tasks[0].Title);
+    }
 }
