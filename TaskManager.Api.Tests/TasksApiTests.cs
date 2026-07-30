@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Testing;
 using TaskManager.Api.Contracts;
 using TaskManager.Api.Tests;
@@ -24,14 +25,14 @@ public class TasksApiTests
         HttpResponseMessage response = await client.PostAsJsonAsync("/api/tasks", request);
 
         //Act
-        List<TaskResponse>? tasks = await client.GetFromJsonAsync<List<TaskResponse>>("/api/tasks");
+        PagedResponse<TaskResponse>? pagedResponse = await client.GetFromJsonAsync<PagedResponse<TaskResponse>>("/api/tasks");
 
 
         //Assert
-        Assert.NotNull(tasks);
-        Assert.Single(tasks);
-        Assert.Equal("valid title", tasks[0].Title);
-        Assert.Equal(TaskPriority.Medium, tasks[0].TaskPriority);
+        Assert.NotNull(pagedResponse);
+        Assert.Single(pagedResponse.Items);
+        Assert.Equal("valid title", pagedResponse.Items[0].Title);
+        Assert.Equal(TaskPriority.Medium, pagedResponse.Items[0].TaskPriority);
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
     }
 
@@ -122,11 +123,61 @@ public class TasksApiTests
 
         await client.PutAsync("api/tasks/1/complete", null);
 
-        List<TaskResponse>? tasks = await client.GetFromJsonAsync<List<TaskResponse>>("/api/tasks?isComplete=false");
+        PagedResponse<TaskResponse>? response = await client.GetFromJsonAsync<PagedResponse<TaskResponse>>("/api/tasks?isComplete=false");
 
-        Assert.NotNull(tasks);
-        Assert.Single(tasks);
-        Assert.False(tasks[0].IsComplete);
-        Assert.Equal("target", tasks[0].Title);
+        Assert.NotNull(response);
+        Assert.Single(response.Items);
+        Assert.False(response.Items[0].IsComplete);
+        Assert.Equal("target", response.Items[0].Title);
+    }
+
+    [Fact]
+    public async Task GetTasks_WithPagination_ShouldReturnRequestedPage()
+    {
+        // Arrange
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        await client.PostAsJsonAsync(
+            "/api/tasks",
+            new CreateTaskRequest
+            {
+                Title = "title 1",
+                Priority = TaskPriority.Low
+            }
+        );
+
+        await client.PostAsJsonAsync(
+            "/api/tasks",
+            new CreateTaskRequest
+            {
+                Title = "title 2",
+                Priority = TaskPriority.Medium
+            }
+        );
+
+        await client.PostAsJsonAsync(
+            "/api/tasks",
+            new CreateTaskRequest
+            {
+                Title = "title 3",
+                Priority = TaskPriority.High
+            }
+        );
+
+        // Act
+
+        PagedResponse<TaskResponse>? response =
+            await client.GetFromJsonAsync<PagedResponse<TaskResponse>>("/api/tasks?page=2&pageSize=1");
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Single(response.Items);
+        Assert.Equal("title 2", response.Items[0].Title);
+        Assert.Equal(2, response.Page);
+        Assert.Equal(1, response.PageSize);
+        Assert.Equal(3, response.TotalCount);
+        Assert.Equal(3, response.TotalPages);
     }
 }

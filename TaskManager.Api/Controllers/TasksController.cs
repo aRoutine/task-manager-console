@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskManager.Api.Contracts;
 using TaskManager.Interfaces;
 using TaskManager.Models;
@@ -55,7 +56,22 @@ public class TasksController : ControllerBase
             search: request.Search
         );
 
-        return Ok(MapToResponseList(tasks));
+        int totalCount = tasks.Count;
+
+        List<TaskItem> pagedTasks = tasks
+        .Skip((request.Page - 1) * request.PageSize)
+        .Take(request.PageSize)
+        .ToList();
+
+        PagedResponse<TaskResponse> response = new PagedResponse<TaskResponse>
+        {
+            Items = MapToResponseList(tasks),
+            Page = request.Page,
+            PageSize = request.PageSize,
+            TotalCount = totalCount
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("{id:int}")]
@@ -113,7 +129,7 @@ public class TasksController : ControllerBase
 
         return CreatedAtAction(
             nameof(GetTaskById),
-            new {id = response.TaskId},
+            new { id = response.TaskId },
             response
         );
     }
