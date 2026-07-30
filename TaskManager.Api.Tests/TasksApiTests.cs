@@ -153,7 +153,7 @@ public class TasksApiTests
             new CreateTaskRequest
             {
                 Title = "title 2",
-                Priority = TaskPriority.Medium
+                Priority = TaskPriority.Low
             }
         );
 
@@ -162,7 +162,7 @@ public class TasksApiTests
             new CreateTaskRequest
             {
                 Title = "title 3",
-                Priority = TaskPriority.High
+                Priority = TaskPriority.Low
             }
         );
 

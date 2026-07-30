@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TaskManager.Api.Contracts;
 using TaskManager.Interfaces;
 using TaskManager.Models;
@@ -48,7 +47,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TaskResponse>>> GetTasks([FromQuery] TaskFilterRequest request)
+    public async Task<ActionResult<PagedResponse<TaskResponse>>> GetTasks([FromQuery] TaskFilterRequest request)
     {
         List<TaskItem> tasks = await _taskService.GetTasksAsync(
             isComplete: request.IsComplete,
@@ -65,10 +64,11 @@ public class TasksController : ControllerBase
 
         PagedResponse<TaskResponse> response = new PagedResponse<TaskResponse>
         {
-            Items = MapToResponseList(tasks),
+            Items = MapToResponseList(pagedTasks),
             Page = request.Page,
             PageSize = request.PageSize,
-            TotalCount = totalCount
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize)
         };
 
         return Ok(response);
