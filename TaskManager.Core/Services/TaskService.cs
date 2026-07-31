@@ -45,6 +45,11 @@ public class TaskService : ITaskService
         .ToList();
     }
 
+    public async Task<PagedResult<TaskItem>> GetPagedTasksAsync(TaskQueryParameters parameters)
+    {
+        return await _taskRepository.GetPagedAsync(parameters);
+    }
+
     public async Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search)
     {
         List<TaskItem>? tasks = await _taskRepository.GetAllAsync();

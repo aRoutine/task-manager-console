@@ -26,8 +26,8 @@ public class TasksController : ControllerBase
 
     private static List<TaskResponse> MapToResponseList(List<TaskItem> tasks)
     {
-        return tasks.
-            Select(MapToResponse)
+        return tasks
+            .Select(MapToResponse)
             .ToList();
     }
 
@@ -49,26 +49,24 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PagedResponse<TaskResponse>>> GetTasks([FromQuery] TaskFilterRequest request)
     {
-        List<TaskItem> tasks = await _taskService.GetTasksAsync(
-            isComplete: request.IsComplete,
-            priority: request.Priority,
-            search: request.Search
-        );
-
-        int totalCount = tasks.Count;
-
-        List<TaskItem> pagedTasks = tasks
-        .Skip((request.Page - 1) * request.PageSize)
-        .Take(request.PageSize)
-        .ToList();
-
-        PagedResponse<TaskResponse> response = new PagedResponse<TaskResponse>
+        TaskQueryParameters parameters = new TaskQueryParameters
         {
-            Items = MapToResponseList(pagedTasks),
-            Page = request.Page,
-            PageSize = request.PageSize,
-            TotalCount = totalCount,
-            TotalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize)
+          IsComplete = request.IsComplete,
+          Priority = request.Priority,
+          Page = request.Page,
+          PageSize = request.PageSize,
+          Search = request.Search
+        };
+
+        PagedResult<TaskItem> result = await _taskService.GetPagedTasksAsync(parameters);
+
+        PagedResponse<TaskItem> response = new PagedResponse<TaskItem>
+        {
+            Items = result.Items,
+            Page = result.Page,
+            PageSize = result.PageSize,
+            TotalCount = result.TotalCount,
+            TotalPages = result.TotalPages
         };
 
         return Ok(response);

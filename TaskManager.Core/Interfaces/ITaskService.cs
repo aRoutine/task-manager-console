@@ -10,6 +10,8 @@ public interface ITaskService
     Task<TaskItem?> GetTaskByIdAsync(int id);
 
     Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search);
+    
+    Task<PagedResult<TaskItem>> GetPagedTasksAsync(TaskQueryParameters parameters);
 
     Task<List<TaskItem>> GetTasksAsync();
 

@@ -1,7 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Testing;
 using TaskManager.Api.Contracts;
 using TaskManager.Api.Tests;
 using TaskManager.Models;

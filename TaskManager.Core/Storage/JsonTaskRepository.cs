@@ -1,10 +1,11 @@
 using TaskManager.Interfaces;
 using TaskManager.Models;
+using TaskManager.Results;
 
 namespace TaskManager.Storage;
 
 public class JsonTaskRepository : ITaskRepository
-{ 
+{
     private readonly TaskStorage _taskStorage = new();
     private readonly List<TaskItem> _tasks;
 
@@ -16,6 +17,49 @@ public class JsonTaskRepository : ITaskRepository
     public Task<List<TaskItem>> GetAllAsync()
     {
         return Task.FromResult(_tasks.ToList());
+    }
+
+    public Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters)
+    {
+        IEnumerable<TaskItem> query = _tasks;
+
+        if (parameters.IsComplete is not null)
+        {
+            query = query.Where(task => task.IsComplete == parameters.IsComplete.Value);
+        }
+
+        if (parameters.Priority is not null)
+        {
+            query = query.Where(task => task.TaskPriority == parameters.Priority.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(parameters.Search))
+        {
+            query = query.Where(task =>
+                task.Title.Contains(parameters.Search, StringComparison.OrdinalIgnoreCase));
+        }
+
+        query = query
+            .OrderByDescending(task => task.TaskPriority)
+            .ThenBy(task => task.CreatedAt);
+
+        int totalCount = query.Count();
+
+        List<TaskItem> items = query
+            .Skip((parameters.Page - 1) * parameters.PageSize)
+            .Take(parameters.PageSize)
+            .ToList();
+
+        PagedResult<TaskItem> result = new PagedResult<TaskItem>
+        {
+            Items = items,
+            Page = parameters.Page,
+            PageSize = parameters.PageSize,
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling(totalCount / (double)parameters.PageSize)
+        };
+
+        return Task.FromResult(result);
     }
 
     public Task<TaskItem?> GetByIdAsync(int id)
@@ -36,7 +80,7 @@ public class JsonTaskRepository : ITaskRepository
 
     public void Update(TaskItem task)
     {
-        
+
     }
 
     public void Delete(TaskItem task)

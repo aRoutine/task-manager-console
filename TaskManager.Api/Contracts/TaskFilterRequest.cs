@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using TaskManager.Consts;
 using TaskManager.Models;
 
 namespace TaskManager.Api.Contracts;
@@ -10,8 +11,8 @@ public class TaskFilterRequest
     public string? Search { get; set; }
 
     [Range(minimum: 1, maximum: int.MaxValue, ErrorMessage = "Номер страницы должна быть больше 0")]
-    public int Page { get; set; } = 1;
+    public int Page { get; set; } = MainConsts.PAGE_DEF;
 
     [Range(minimum: 1, maximum: 100, ErrorMessage = "Размер страниц должен быть от 1 до 100")]
-    public int PageSize { get; set; } = 10;
+    public int PageSize { get; set; } = MainConsts.PAGE_SIZE_DEF;
 }

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Interfaces;
 using TaskManager.Models;
+using TaskManager.Results;
 
 namespace TaskManager.Storage;
 
@@ -29,6 +30,47 @@ public class EfTaskRepository : ITaskRepository
         return await _dbContext.Tasks
             .AsNoTracking()
             .ToListAsync();
+    }
+
+    public async Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters)
+    {
+        IQueryable<TaskItem> query = _dbContext.Tasks
+        .AsNoTracking();
+
+        if (parameters.IsComplete is not null)
+        {
+            query = query.Where(t => t.IsComplete == parameters.IsComplete);
+        }
+
+        if (parameters.Priority is not null)
+        {
+            query = query.Where(t => t.TaskPriority == parameters.Priority);
+        }
+
+        if (!string.IsNullOrWhiteSpace(parameters.Search))
+        {
+            string search = parameters.Search.ToLower();
+
+            query = query.Where(t => t.Title.ToLower().Contains(search));
+        }
+
+        query = query.OrderByDescending(t => t.TaskPriority)
+        .ThenBy(t => t.CreatedAt);
+
+        int TotalCount = await query.CountAsync();
+
+        List<TaskItem> items = await query.Skip((parameters.Page - 1) * parameters.PageSize)
+        .Take(parameters.PageSize)
+        .ToListAsync();
+
+        return new PagedResult<TaskItem>
+        {
+            Items = items,
+            Page = parameters.Page,
+            PageSize = parameters.PageSize,
+            TotalCount = TotalCount,
+            TotalPages = (int)Math.Ceiling(TotalCount / (double)parameters.PageSize)
+        };
     }
 
     public async Task<TaskItem?> GetByIdAsync(int id)
