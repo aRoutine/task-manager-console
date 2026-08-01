@@ -178,4 +178,27 @@ public class TaskService : ITaskService
     {
         return await _taskRepository.GetByIdAsync(id);
     }
+
+    public async Task<TaskOperationResult> UpdateTaskAsync(int id, string title, TaskPriority priority, bool isComplete)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            return TaskOperationResult.Fail("Описание задачи не может быть пустым");
+        }
+
+        TaskItem? task = await _taskRepository.GetByIdAsync(id);
+
+        if (task == null)
+        {
+            return TaskOperationResult.Fail("Задача по заданному id не найдена");
+        }
+
+        task.IsComplete = isComplete;
+        task.TaskPriority = priority;
+        task.Title = title;
+
+        _taskRepository.Update(task);
+
+        return TaskOperationResult.Ok("Задача успешно переименованна", task.Id);
+    }
 }

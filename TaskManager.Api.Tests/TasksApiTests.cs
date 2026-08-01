@@ -178,4 +178,74 @@ public class TasksApiTests
         Assert.Equal(3, response.TotalCount);
         Assert.Equal(3, response.TotalPages);
     }
+
+    [Fact]
+    public async Task UpdateTask_WithValidRequest_ShouldReturnOk()
+    {
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        CreateTaskRequest createRequest = new CreateTaskRequest
+        {
+            Title = "valid title",
+            Priority = TaskPriority.Low
+        };
+
+        await client.PostAsJsonAsync("/api/tasks", createRequest);
+
+        UpdateTaskRequest request = new UpdateTaskRequest
+        {
+            Title = "new valid title",
+            Priority = TaskPriority.High,
+            IsComplete = true
+        };
+
+        HttpResponseMessage response = await client.PutAsJsonAsync("/api/tasks/1", request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        TaskResponse? task = await client.GetFromJsonAsync<TaskResponse>("/api/tasks/1");
+
+        Assert.NotNull(task);
+        Assert.Equal("new valid title", task.Title);
+        Assert.Equal(TaskPriority.High, task.TaskPriority);
+        Assert.True(task.IsComplete);
+    }
+
+    [Fact]
+    public async Task UpdateTask_WithUnknownId_ShouldReturnNotFound()
+    {
+        await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        CreateTaskRequest createRequest = new CreateTaskRequest
+        {
+            Title = "valid title",
+            Priority = TaskPriority.Low
+        };
+
+        await client.PostAsJsonAsync("/api/tasks", createRequest);
+
+        UpdateTaskRequest request = new UpdateTaskRequest
+        {
+            Title = "new valid title",
+            Priority = TaskPriority.High,
+            IsComplete = true
+        };
+
+        HttpResponseMessage response = await client.PutAsJsonAsync("/api/tasks/2", request);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        TaskResponse? task = await client.GetFromJsonAsync<TaskResponse>("/api/tasks/1");
+
+        Assert.NotNull(task);
+        Assert.Equal("valid title", task.Title);
+        Assert.Equal(TaskPriority.Low, task.TaskPriority);
+        Assert.False(task.IsComplete);
+    }
+
+
 }

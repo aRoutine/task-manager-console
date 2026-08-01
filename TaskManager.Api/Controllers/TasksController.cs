@@ -51,11 +51,11 @@ public class TasksController : ControllerBase
     {
         TaskQueryParameters parameters = new TaskQueryParameters
         {
-          IsComplete = request.IsComplete,
-          Priority = request.Priority,
-          Page = request.Page,
-          PageSize = request.PageSize,
-          Search = request.Search
+            IsComplete = request.IsComplete,
+            Priority = request.Priority,
+            Page = request.Page,
+            PageSize = request.PageSize,
+            Search = request.Search
         };
 
         PagedResult<TaskItem> result = await _taskService.GetPagedTasksAsync(parameters);
@@ -130,6 +130,26 @@ public class TasksController : ControllerBase
             new { id = response.TaskId },
             response
         );
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> UpdateTask(int id, UpdateTaskRequest request)
+    {
+        TaskOperationResult result = await _taskService.UpdateTaskAsync(
+            id,
+            request.Title,
+            request.Priority,
+            request.IsComplete
+            );
+
+        TaskOperationResponse response = MapToOperationResponse(result);
+
+        if (!result.Success)
+        {
+            return NotFound(response);
+        }
+
+        return Ok(response);
     }
 
     [HttpPut("{id:int}/complete")]
