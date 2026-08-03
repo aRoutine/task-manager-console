@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TaskManager.Api.ExceptionHandling;
 using TaskManager.Data;
 using TaskManager.Interfaces;
 using TaskManager.Services;
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -20,6 +23,9 @@ builder.Services.AddScoped<ITaskRepository, EfTaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {

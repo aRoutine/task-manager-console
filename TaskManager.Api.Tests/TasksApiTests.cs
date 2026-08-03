@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Contracts;
 using TaskManager.Api.Tests;
 using TaskManager.Models;
@@ -247,5 +248,23 @@ public class TasksApiTests
         Assert.False(task.IsComplete);
     }
 
+    [Fact]
+    public async Task UnknownRoute_ShouldReturnNotFoundProblemDetails()
+    {
+        await using CustomWebApplicationFactory factory =
+            new CustomWebApplicationFactory();
+
+        HttpClient client = factory.CreateClient();
+
+        HttpResponseMessage response =
+            await client.GetAsync("/api/unknown-route");
+
+        ProblemDetails? problemDetails =
+            await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(404, problemDetails.Status);
+    }
 
 }

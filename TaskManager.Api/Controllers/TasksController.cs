@@ -72,6 +72,12 @@ public class TasksController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("test-error")]
+    public ActionResult TestError()
+    {
+        throw new InvalidOperationException("тестовая ошибка");
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TaskResponse>> GetTaskById(int id)
     {
