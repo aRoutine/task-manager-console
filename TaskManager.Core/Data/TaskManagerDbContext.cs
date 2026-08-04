@@ -11,4 +11,20 @@ public class TaskManagerDbContext : DbContext
     }
 
     public DbSet<TaskItem> Tasks { get; set; }
+    public DbSet<User> Users => Set<User>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+        .HasIndex(user => user.Email)
+        .IsUnique();
+
+        modelBuilder.Entity<TaskItem>()
+        .HasOne(task => task.User)
+        .WithMany(user => user.Tasks)
+        .HasForeignKey(task => task.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
+    }
 }
