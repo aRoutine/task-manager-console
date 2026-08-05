@@ -10,11 +10,36 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher<User> _passwordHasher;
-
-    public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
+    private readonly IJwtTokenService _jwtTokenService;
+    public AuthService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher, IJwtTokenService jwtTokenService)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _jwtTokenService = jwtTokenService;
+    }
+
+    public async Task<LoginResult> LoginAsync(string email, string password)
+    {
+        email = email.Trim().ToLowerInvariant();
+
+        User? user = await _userRepository.GetByEmailAsync(email);
+
+        if (user is null)
+        {
+            return LoginResult.Fail("Неверный email или пароль");
+        }
+
+        PasswordVerificationResult verificationResult = _passwordHasher
+        .VerifyHashedPassword(user, user.PasswordHash, password);
+
+        if (verificationResult == PasswordVerificationResult.Failed)
+        {
+            return LoginResult.Fail("Неверный email или пароль");
+        }
+
+        string token = _jwtTokenService.GenerateToken(user);
+
+        return LoginResult.Ok(user, token);
     }
 
     public async Task<AuthOperationResult> RegisterAsync(string userName, string email, string password)

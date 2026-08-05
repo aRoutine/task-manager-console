@@ -28,10 +28,10 @@ public class AuthController : ControllerBase
         if (!result.Succes)
         {
             return Conflict(new
-                {
-                    result.Succes,
-                    result.Message
-                });
+            {
+                result.Succes,
+                result.Message
+            });
         }
 
         AuthResponse response = new AuthResponse
@@ -42,6 +42,28 @@ public class AuthController : ControllerBase
             Message = result.Message
         };
 
-        return Created(string.Empty,response);
+        return Created(string.Empty, response);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+    {
+        LoginResult result = await _authService.LoginAsync(request.Email, request.Password);
+
+        if (!result.Success || result.User == null)
+        {
+            return Unauthorized(new { result.Success, result.Message });
+        }
+
+        AuthResponse response = new AuthResponse
+        {
+            Message = result.Message,
+            UserName = result.User.UserName,
+            Email = result.User.Email,
+            UserId = result.User.Id,
+            Token = result.Token
+        };
+
+        return Ok(response);
     }
 }
