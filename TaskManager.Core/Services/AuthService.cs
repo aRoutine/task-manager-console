@@ -70,6 +70,10 @@ public class AuthService : IAuthService
 
         _userRepository.Add(user);
 
-        return AuthOperationResult.Ok("Регистрация прошла успешна", user.Id);
+        await _userRepository.SaveChangesAsync();
+
+        string token = _jwtTokenService.GenerateToken(user);
+
+        return AuthOperationResult.Ok("Регистрация прошла успешна", user.Id, token);
     }
 }

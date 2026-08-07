@@ -39,7 +39,8 @@ public class AuthController : ControllerBase
             UserId = result.UserId!.Value,
             UserName = request.UserName,
             Email = request.Email,
-            Message = result.Message
+            Message = result.Message,
+            Token = result.Token
         };
 
         return Created(string.Empty, response);

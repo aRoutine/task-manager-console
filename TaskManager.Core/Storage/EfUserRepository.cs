@@ -15,22 +15,22 @@ public class EfUserRepository : IUserRepository
     }
     public void Add(User user)
     {
-        _dbContext.Users.Add(user);
+        _dbContext.Users.AddAsync(user);
     }
 
-    public Task<User?> GetByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email)
     {
-        return _dbContext.Users.FirstOrDefaultAsync(user => user.Email == email);
+        return await _dbContext.Users.FirstOrDefaultAsync(user => user.Email == email);
     }
 
-    public Task<User?> GetByUserNameAsync(string userName)
+    public async Task<User?> GetByUserNameAsync(string userName)
     {
-        return _dbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
+        return await _dbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
 
     }
 
-    public void SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 }
