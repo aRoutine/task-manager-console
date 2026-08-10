@@ -25,16 +25,18 @@ public class EfTaskRepository : ITaskRepository
         _dbContext.Tasks.Remove(task);
     }
 
-    public async Task<List<TaskItem>> GetAllAsync()
+    public async Task<List<TaskItem>> GetAllAsync(int userId)
     {
         return await _dbContext.Tasks
+            .Where(t => t.UserId == userId)
             .AsNoTracking()
             .ToListAsync();
     }
 
-    public async Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters)
+    public async Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters, int userId)
     {
         IQueryable<TaskItem> query = _dbContext.Tasks
+        .Where(t => t.UserId == userId)
         .AsNoTracking();
 
         if (parameters.IsComplete is not null)
@@ -73,9 +75,11 @@ public class EfTaskRepository : ITaskRepository
         };
     }
 
-    public async Task<TaskItem?> GetByIdAsync(int id)
+    public async Task<TaskItem?> GetByIdAsync(int id, int userId)
     {
-        return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+        return await _dbContext.Tasks
+            .Where(t => t.UserId == userId)
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
 
     public async Task SaveChangesAsync()

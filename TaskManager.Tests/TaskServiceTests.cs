@@ -1,3 +1,4 @@
+using TaskManager.Interfaces;
 using TaskManager.Models;
 using TaskManager.Services;
 using TaskManager.Tests.Fakes;
@@ -12,7 +13,8 @@ public class TaskServiceTests
     {
         // Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
 
         // Act
         var result = await service.AddTaskAsync("valid name", TaskPriority.Medium);
@@ -28,7 +30,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
 
         //Act
         var result = await service.AddTaskAsync("", TaskPriority.Medium);
@@ -44,7 +47,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
 
         //Act
         var result = await service.DeleteTaskAsync(3);
@@ -60,7 +64,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
         await service.AddTaskAsync("valid name", TaskPriority.Low);
 
         //Act
@@ -76,7 +81,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
         await service.AddTaskAsync("valid name", TaskPriority.Low);
         await service.CompleteTaskAsync(1);
 
@@ -93,7 +99,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
 
         //Act
         var result = await service.CompleteTaskAsync(3);
@@ -108,7 +115,8 @@ public class TaskServiceTests
     {
         //Arrange
         FakeTaskRepository fakeTaskRepository = new FakeTaskRepository();
-        TaskService service = new TaskService(taskRepository: fakeTaskRepository);
+        ICurrentUserService currentUserService = new FakeCurrentUserService();
+        TaskService service = new TaskService(fakeTaskRepository, currentUserService);
 
         await service.AddTaskAsync("Важное задание", TaskPriority.High);
         await service.AddTaskAsync("Неважное задание", TaskPriority.Low);

@@ -14,12 +14,12 @@ public class JsonTaskRepository : ITaskRepository
         _tasks = _taskStorage.LoadTasks();
     }
 
-    public Task<List<TaskItem>> GetAllAsync()
+    public Task<List<TaskItem>> GetAllAsync(int userId)
     {
         return Task.FromResult(_tasks.ToList());
     }
 
-    public Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters)
+    public Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters, int userId)
     {
         IEnumerable<TaskItem> query = _tasks;
 
@@ -62,7 +62,7 @@ public class JsonTaskRepository : ITaskRepository
         return Task.FromResult(result);
     }
 
-    public Task<TaskItem?> GetByIdAsync(int id)
+    public Task<TaskItem?> GetByIdAsync(int id, int userId)
     {
         return Task.FromResult(_tasks.FirstOrDefault(task => task.Id == id));
     }

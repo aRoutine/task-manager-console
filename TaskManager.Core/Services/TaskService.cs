@@ -4,15 +4,8 @@ using TaskManager.Interfaces;
 
 namespace TaskManager.Services;
 
-public class TaskService : ITaskService
+public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _currentUserService) : ITaskService
 {
-    private readonly ITaskRepository _taskRepository;
-
-    public TaskService(ITaskRepository taskRepository)
-    {
-        _taskRepository = taskRepository;
-    }
-
     public async Task<TaskOperationResult> AddTaskAsync(string title, TaskPriority taskPriority)
     {
         if (string.IsNullOrWhiteSpace(title))
@@ -20,12 +13,15 @@ public class TaskService : ITaskService
             return TaskOperationResult.Fail("Название задачи не может быть пустым");
         }
 
+        int userId = _currentUserService.UserId;
+
         TaskItem task = new TaskItem
         {
             Title = title,
             TaskPriority = taskPriority,
             IsComplete = false,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            UserId = userId
         };
 
         _taskRepository.Add(task);
@@ -37,7 +33,8 @@ public class TaskService : ITaskService
 
     public async Task<List<TaskItem>> GetTasksAsync()
     {
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+        int userId = _currentUserService.UserId;
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
 
         return tasks
         .OrderByDescending(t => t.TaskPriority)
@@ -47,12 +44,16 @@ public class TaskService : ITaskService
 
     public async Task<PagedResult<TaskItem>> GetPagedTasksAsync(TaskQueryParameters parameters)
     {
-        return await _taskRepository.GetPagedAsync(parameters);
+        int userId = _currentUserService.UserId;
+
+        return await _taskRepository.GetPagedAsync(parameters, userId);
     }
 
     public async Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search)
     {
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+        int userId = _currentUserService.UserId;
+
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
 
         if (isComplete != null)
         {
@@ -83,7 +84,9 @@ public class TaskService : ITaskService
 
     public async Task<List<TaskItem>> GetCompletedTasksAsync()
     {
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+        int userId = _currentUserService.UserId;
+
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
 
         return tasks
         .Where(t => t.IsComplete)
@@ -94,7 +97,9 @@ public class TaskService : ITaskService
 
     public async Task<List<TaskItem>> GetNotCompletedTasksAsync()
     {
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+        int userId = _currentUserService.UserId;
+
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
 
         return tasks
         .Where(t => !t.IsComplete)
@@ -105,7 +110,9 @@ public class TaskService : ITaskService
 
     public async Task<List<TaskItem>> GetHighPriorityTasksAsync()
     {
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync();
+        int userId = _currentUserService.UserId;
+
+        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
 
         return tasks
         .Where(t => t.TaskPriority == TaskPriority.High)
@@ -115,7 +122,9 @@ public class TaskService : ITaskService
 
     public async Task<TaskOperationResult> CompleteTaskAsync(int id)
     {
-        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
+        int userId = _currentUserService.UserId;
+
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id, userId);
 
         if (taskItem == null)
         {
@@ -136,7 +145,9 @@ public class TaskService : ITaskService
 
     public async Task<TaskOperationResult> DeleteTaskAsync(int id)
     {
-        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
+        int userId = _currentUserService.UserId;
+
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id, userId);
 
         if (taskItem == null)
         {
@@ -153,7 +164,9 @@ public class TaskService : ITaskService
 
     public async Task<TaskOperationResult> RenameTaskAsync(int id, string title)
     {
-        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id);
+        int userId = _currentUserService.UserId;
+
+        TaskItem? taskItem = await _taskRepository.GetByIdAsync(id, userId);
 
         if (taskItem == null)
         {
@@ -176,7 +189,9 @@ public class TaskService : ITaskService
 
     public async Task<TaskItem?> GetTaskByIdAsync(int id)
     {
-        return await _taskRepository.GetByIdAsync(id);
+        int userId = _currentUserService.UserId;
+
+        return await _taskRepository.GetByIdAsync(id, userId);
     }
 
     public async Task<TaskOperationResult> UpdateTaskAsync(int id, string title, TaskPriority priority, bool isComplete)
@@ -186,7 +201,9 @@ public class TaskService : ITaskService
             return TaskOperationResult.Fail("Описание задачи не может быть пустым");
         }
 
-        TaskItem? task = await _taskRepository.GetByIdAsync(id);
+        int userId = _currentUserService.UserId;
+
+        TaskItem? task = await _taskRepository.GetByIdAsync(id, userId);
 
         if (task == null)
         {

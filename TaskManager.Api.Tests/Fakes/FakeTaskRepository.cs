@@ -16,6 +16,7 @@ public class FakeTaskRepository : ITaskRepository
         : _tasks.Max(t => t.Id) + 1;
 
         task.Id = nextId;
+        task.UserId = 1;
 
         _tasks.Add(task);
     }
@@ -25,12 +26,12 @@ public class FakeTaskRepository : ITaskRepository
         _tasks.Remove(task);
     }
 
-    public Task<List<TaskItem>> GetAllAsync()
+    public Task<List<TaskItem>> GetAllAsync(int userId)
     {
         return Task.FromResult(_tasks.ToList());
     }
 
-    public Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters)
+    public Task<PagedResult<TaskItem>> GetPagedAsync(TaskQueryParameters parameters, int userId)
     {
         IEnumerable<TaskItem> query = _tasks;
 
@@ -73,7 +74,7 @@ public class FakeTaskRepository : ITaskRepository
         return Task.FromResult(result);
     }
 
-    public Task<TaskItem?> GetByIdAsync(int id)
+    public Task<TaskItem?> GetByIdAsync(int id, int userId)
     {
         return Task.FromResult(_tasks.FirstOrDefault(t => t.Id == id));
     }
