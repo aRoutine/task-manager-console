@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManager.Api.Contracts;
 using TaskManager.Api.Tests;
 using TaskManager.Models;
+using TaskManager.Results;
+using System.Net.Http.Headers;
 
 public class TasksApiTests
 {
@@ -14,6 +16,22 @@ public class TasksApiTests
         await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+        LoginRequest loginRequest = new LoginRequest
+        {
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         CreateTaskRequest request = new CreateTaskRequest
         {
@@ -42,6 +60,20 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
+        LoginRequest loginRequest = new LoginRequest
+        {
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
+
         CreateTaskRequest request = new CreateTaskRequest
         {
             Title = "",
@@ -60,6 +92,20 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
+
         HttpResponseMessage response = await client.GetAsync("/api/tasks");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -71,6 +117,20 @@ public class TasksApiTests
         await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         CreateTaskRequest request = new CreateTaskRequest
         {
@@ -92,6 +152,20 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
+
         HttpResponseMessage response = await client.GetAsync("/api/tasks/9999");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -103,6 +177,20 @@ public class TasksApiTests
         await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         CreateTaskRequest request1 = new CreateTaskRequest
         {
@@ -137,6 +225,20 @@ public class TasksApiTests
         await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         await client.PostAsJsonAsync(
             "/api/tasks",
@@ -187,6 +289,20 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
+
         CreateTaskRequest createRequest = new CreateTaskRequest
         {
             Title = "valid title",
@@ -220,6 +336,20 @@ public class TasksApiTests
         await using CustomWebApplicationFactory factory = new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         CreateTaskRequest createRequest = new CreateTaskRequest
         {
@@ -255,6 +385,20 @@ public class TasksApiTests
             new CustomWebApplicationFactory();
 
         HttpClient client = factory.CreateClient();
+
+         LoginRequest loginRequest = new LoginRequest
+        {
+              Email = "default_email@example.com",
+              Password = "123456789a!_sl"
+        };
+
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+
+        Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth!.Token);
 
         HttpResponseMessage response =
             await client.GetAsync("/api/unknown-route");
