@@ -12,10 +12,14 @@ using TaskManager.Storage;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi;
+using FluentValidation;
+using TaskManager.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTaskRequestValidator>();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -47,7 +51,7 @@ builder.Services
 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
-    JwtOptions jwtOptions = 
+    JwtOptions jwtOptions =
     builder.Configuration.GetSection("Jwt")
     .Get<JwtOptions>() ?? throw new InvalidOperationException("JWT configuration is missing");
 

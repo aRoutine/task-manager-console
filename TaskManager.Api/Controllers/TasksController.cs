@@ -62,9 +62,9 @@ public class TasksController : ControllerBase
 
         PagedResult<TaskItem> result = await _taskService.GetPagedTasksAsync(parameters);
 
-        PagedResponse<TaskItem> response = new PagedResponse<TaskItem>
+        PagedResponse<TaskResponse> response = new PagedResponse<TaskResponse>
         {
-            Items = result.Items,
+            Items = MapToResponseList(result.Items),
             Page = result.Page,
             PageSize = result.PageSize,
             TotalCount = result.TotalCount,
@@ -72,12 +72,6 @@ public class TasksController : ControllerBase
         };
 
         return Ok(response);
-    }
-
-    [HttpGet("test-error")]
-    public ActionResult TestError()
-    {
-        throw new InvalidOperationException("тестовая ошибка");
     }
 
     [HttpGet("{id:int}")]
@@ -95,30 +89,6 @@ public class TasksController : ControllerBase
         }
 
         return Ok(MapToResponse(task));
-    }
-
-    [HttpGet("completed")]
-    public async Task<ActionResult<List<TaskResponse>>> GetCompletedTasks()
-    {
-        List<TaskItem> tasks = await _taskService.GetCompletedTasksAsync();
-
-        return Ok(MapToResponseList(tasks));
-    }
-
-    [HttpGet("not-completed")]
-    public async Task<ActionResult<List<TaskResponse>>> GetNotCompletedTasks()
-    {
-        List<TaskItem> tasks = await _taskService.GetNotCompletedTasksAsync();
-
-        return Ok(MapToResponseList(tasks));
-    }
-
-    [HttpGet("high-priority")]
-    public async Task<ActionResult<List<TaskResponse>>> GetHighPriorityTasks()
-    {
-        List<TaskItem> tasks = await _taskService.GetHighPriorityTasksAsync();
-
-        return Ok(MapToResponseList(tasks));
     }
 
     [HttpPost]
@@ -155,36 +125,6 @@ public class TasksController : ControllerBase
         if (!result.Success)
         {
             return NotFound(response);
-        }
-
-        return Ok(response);
-    }
-
-    [HttpPut("{id:int}/complete")]
-    public async Task<ActionResult> CompleteTask(int id)
-    {
-        TaskOperationResult result = await _taskService.CompleteTaskAsync(id);
-
-        TaskOperationResponse response = MapToOperationResponse(result);
-
-        if (!result.Success)
-        {
-            return BadRequest(response);
-        }
-
-        return Ok(response);
-    }
-
-    [HttpPut("{id:int}/rename")]
-    public async Task<ActionResult> RenameTask(int id, RenameTaskRequest request)
-    {
-        TaskOperationResult result = await _taskService.RenameTaskAsync(id, request.Title);
-
-        TaskOperationResponse response = MapToOperationResponse(result);
-
-        if (!result.Success)
-        {
-            return BadRequest(response);
         }
 
         return Ok(response);

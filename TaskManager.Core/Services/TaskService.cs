@@ -49,77 +49,6 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
         return await _taskRepository.GetPagedAsync(parameters, userId);
     }
 
-    public async Task<List<TaskItem>> GetTasksAsync(bool? isComplete, TaskPriority? priority, string? search)
-    {
-        int userId = _currentUserService.UserId;
-
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
-
-        if (isComplete != null)
-        {
-            tasks = tasks
-            .Where(t => t.IsComplete == isComplete)
-            .ToList();
-        }
-
-        if (priority != null)
-        {
-            tasks = tasks
-            .Where(t => t.TaskPriority == priority)
-            .ToList();
-        }
-
-        if (search != null)
-        {
-            tasks = tasks
-            .Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-        }
-
-        return tasks
-        .OrderByDescending(t => t.TaskPriority)
-        .ThenBy(t => t.CreatedAt)
-        .ToList();
-    }
-
-    public async Task<List<TaskItem>> GetCompletedTasksAsync()
-    {
-        int userId = _currentUserService.UserId;
-
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
-
-        return tasks
-        .Where(t => t.IsComplete)
-        .OrderByDescending(t => t.TaskPriority)
-        .ThenBy(t => t.CreatedAt)
-        .ToList();
-    }
-
-    public async Task<List<TaskItem>> GetNotCompletedTasksAsync()
-    {
-        int userId = _currentUserService.UserId;
-
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
-
-        return tasks
-        .Where(t => !t.IsComplete)
-        .OrderByDescending(t => t.TaskPriority)
-        .ThenBy(t => t.CreatedAt)
-        .ToList();
-    }
-
-    public async Task<List<TaskItem>> GetHighPriorityTasksAsync()
-    {
-        int userId = _currentUserService.UserId;
-
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
-
-        return tasks
-        .Where(t => t.TaskPriority == TaskPriority.High)
-        .OrderBy(t => t.CreatedAt)
-        .ToList();
-    }
-
     public async Task<TaskOperationResult> CompleteTaskAsync(int id)
     {
         int userId = _currentUserService.UserId;
@@ -215,6 +144,8 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
         task.Title = title;
 
         _taskRepository.Update(task);
+
+        await _taskRepository.SaveChangesAsync();
 
         return TaskOperationResult.Ok("Задача успешно переименованна", task.Id);
     }

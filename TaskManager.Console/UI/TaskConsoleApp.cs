@@ -99,9 +99,6 @@ public class TaskConsoleApp
     {
         Console.WriteLine("Укажите какие задачи вас интересуют: ");
         Console.WriteLine("1. Все задачи");
-        Console.WriteLine("2. Выполненные задачи");
-        Console.WriteLine("3. Невыполненные задачи");
-        Console.WriteLine("4. Только задачи с высоким приоритетом");
 
         string? filterInput = Console.ReadLine();
 
@@ -110,27 +107,6 @@ public class TaskConsoleApp
             if (filterNum == 1)
             {
                 List<TaskItem>? tasks = await _taskService.GetTasksAsync();
-                _taskPrinter.PrintTasks(tasks);
-                return;
-            }
-
-            if (filterNum == 2)
-            {
-                List<TaskItem>? tasks = await _taskService.GetCompletedTasksAsync();
-                _taskPrinter.PrintTasks(tasks);
-                return;
-            }
-
-            if (filterNum == 3)
-            {
-                List<TaskItem>? tasks = await _taskService.GetNotCompletedTasksAsync();
-                _taskPrinter.PrintTasks(tasks);
-                return;
-            }
-
-            if (filterNum == 4)
-            {
-                List<TaskItem>? tasks = await _taskService.GetHighPriorityTasksAsync();
                 _taskPrinter.PrintTasks(tasks);
                 return;
             }

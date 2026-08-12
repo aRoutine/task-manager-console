@@ -7,7 +7,7 @@ public class TaskItem
     public bool IsComplete { get; set; }
     public TaskPriority TaskPriority { get; set; }
     public DateTime CreatedAt { get; set; }
-    public int UserId;
+    public int UserId { get; set; }
     public User User { get; set; } = null!;
 
     public TaskItem(string title, TaskPriority taskPriority)
@@ -20,6 +20,6 @@ public class TaskItem
 
     public TaskItem()
     {
-        
+
     }
 }
