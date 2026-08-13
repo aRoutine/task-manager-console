@@ -10,7 +10,7 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            return TaskOperationResult.Fail("Название задачи не может быть пустым");
+            return TaskOperationResult.Fail("Название задачи не может быть пустым", TaskOperationError.Validation);
         }
 
         int userId = _currentUserService.UserId;
@@ -31,17 +31,6 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
         return TaskOperationResult.Ok("Задача успешно добавлена", task.Id);
     }
 
-    public async Task<List<TaskItem>> GetTasksAsync()
-    {
-        int userId = _currentUserService.UserId;
-        List<TaskItem>? tasks = await _taskRepository.GetAllAsync(userId);
-
-        return tasks
-        .OrderByDescending(t => t.TaskPriority)
-        .ThenBy(t => t.CreatedAt)
-        .ToList();
-    }
-
     public async Task<PagedResult<TaskItem>> GetPagedTasksAsync(TaskQueryParameters parameters)
     {
         int userId = _currentUserService.UserId;
@@ -57,12 +46,12 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
 
         if (taskItem == null)
         {
-            return TaskOperationResult.Fail("Задача по заданному ID не найдена");
+            return TaskOperationResult.Fail("Задача по заданному ID не найдена", TaskOperationError.NotFound);
         }
 
         if (taskItem.IsComplete)
         {
-            return TaskOperationResult.Fail("Задача уже выполнена");
+            return TaskOperationResult.Fail("Задача уже выполнена", TaskOperationError.Conflict);
         }
 
         taskItem.IsComplete = true;
@@ -80,7 +69,7 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
 
         if (taskItem == null)
         {
-            return TaskOperationResult.Fail("Задача по заданному Id не была найдена в базе данных");
+            return TaskOperationResult.Fail("Задача по заданному Id не была найдена в базе данных", TaskOperationError.NotFound);
         }
 
         _taskRepository.Delete(taskItem);
@@ -99,12 +88,12 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
 
         if (taskItem == null)
         {
-            return TaskOperationResult.Fail("Задачи по заданному ID не существует");
+            return TaskOperationResult.Fail("Задачи по заданному ID не существует", TaskOperationError.NotFound);
         }
 
         if (string.IsNullOrWhiteSpace(title))
         {
-            return TaskOperationResult.Fail("Задача не может иметь пустое описание");
+            return TaskOperationResult.Fail("Задача не может иметь пустое описание", TaskOperationError.Validation);
         }
 
         taskItem.Title = title;
@@ -127,7 +116,7 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            return TaskOperationResult.Fail("Описание задачи не может быть пустым");
+            return TaskOperationResult.Fail("Описание задачи не может быть пустым", TaskOperationError.Validation);
         }
 
         int userId = _currentUserService.UserId;
@@ -136,7 +125,7 @@ public class TaskService(ITaskRepository _taskRepository, ICurrentUserService _c
 
         if (task == null)
         {
-            return TaskOperationResult.Fail("Задача по заданному id не найдена");
+            return TaskOperationResult.Fail("Задача по заданному id не найдена", TaskOperationError.NotFound);
         }
 
         task.IsComplete = isComplete;

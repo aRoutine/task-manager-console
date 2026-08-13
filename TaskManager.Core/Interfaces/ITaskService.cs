@@ -11,8 +11,6 @@ public interface ITaskService
 
     Task<PagedResult<TaskItem>> GetPagedTasksAsync(TaskQueryParameters parameters);
 
-    Task<List<TaskItem>> GetTasksAsync();
-
     Task<TaskOperationResult> UpdateTaskAsync(
         int id,
         string title,

@@ -100,7 +100,7 @@ public class TasksController : ControllerBase
 
         if (!result.Success)
         {
-            return BadRequest(response);
+            return HandleTaskError(result);
         }
 
         return CreatedAtAction(
@@ -124,10 +124,10 @@ public class TasksController : ControllerBase
 
         if (!result.Success)
         {
-            return NotFound(response);
+            return HandleTaskError(result);
         }
 
-        return Ok(response);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
@@ -135,13 +135,24 @@ public class TasksController : ControllerBase
     {
         TaskOperationResult result = await _taskService.DeleteTaskAsync(id);
 
-        TaskOperationResponse response = MapToOperationResponse(result);
-
         if (!result.Success)
         {
-            return NotFound(response);
+            return HandleTaskError(result);
         }
 
-        return Ok(response);
+        return NoContent();
+    }
+
+    private ActionResult HandleTaskError(TaskOperationResult result)
+    {
+        TaskOperationResponse response = MapToOperationResponse(result);
+
+        return result.Error switch
+        {
+            TaskOperationError.Validation => BadRequest(response),
+            TaskOperationError.NotFound => NotFound(response),
+            TaskOperationError.Conflict => Conflict(response),
+            _ => BadRequest()
+        };
     }
 }

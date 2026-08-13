@@ -92,15 +92,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -118,15 +118,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -152,15 +152,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -178,15 +178,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -208,7 +208,14 @@ public class TasksApiTests
 
         await client.PostAsJsonAsync("api/tasks", request2);
 
-        await client.PutAsync("api/tasks/1/complete", null);
+        UpdateTaskRequest updateTask = new UpdateTaskRequest
+        {
+            Title = "new title",
+            IsComplete = true,
+            Priority = TaskPriority.Medium
+        };
+
+        await client.PutAsJsonAsync("api/tasks/1", updateTask);
 
         PagedResponse<TaskResponse>? response = await client.GetFromJsonAsync<PagedResponse<TaskResponse>>("/api/tasks?isComplete=false");
 
@@ -226,15 +233,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -289,15 +296,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -320,7 +327,7 @@ public class TasksApiTests
 
         HttpResponseMessage response = await client.PutAsJsonAsync("/api/tasks/1", request);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
         TaskResponse? task = await client.GetFromJsonAsync<TaskResponse>("/api/tasks/1");
 
@@ -337,15 +344,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
@@ -386,15 +393,15 @@ public class TasksApiTests
 
         HttpClient client = factory.CreateClient();
 
-         LoginRequest loginRequest = new LoginRequest
+        LoginRequest loginRequest = new LoginRequest
         {
-              Email = "default_email@example.com",
-              Password = "123456789a!_sl"
+            Email = "default_email@example.com",
+            Password = "123456789a!_sl"
         };
 
         var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginRequest);
 
-        AuthResponse? auth= await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        AuthResponse? auth = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
 
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 

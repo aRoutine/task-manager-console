@@ -123,12 +123,12 @@ public class TaskServiceTests
         await service.AddTaskAsync("Обычное задание", TaskPriority.Medium);
 
         //Act
-        var result = await service.GetTasksAsync();
+        var result = await service.GetPagedTasksAsync(new TaskQueryParameters());
 
         //Assert
-        Assert.Equal(TaskPriority.High, result[0].TaskPriority);
-        Assert.Equal(TaskPriority.Medium, result[1].TaskPriority);
-        Assert.Equal(TaskPriority.Low, result[2].TaskPriority);
+        Assert.Equal(TaskPriority.High, result.Items[0].TaskPriority);
+        Assert.Equal(TaskPriority.Medium, result.Items[1].TaskPriority);
+        Assert.Equal(TaskPriority.Low, result.Items[2].TaskPriority);
     }
 
 }

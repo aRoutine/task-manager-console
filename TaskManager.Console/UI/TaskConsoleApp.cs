@@ -106,8 +106,8 @@ public class TaskConsoleApp
         {
             if (filterNum == 1)
             {
-                List<TaskItem>? tasks = await _taskService.GetTasksAsync();
-                _taskPrinter.PrintTasks(tasks);
+                // List<TaskItem>? tasks = await _taskService.GetTasksAsync();
+                // _taskPrinter.PrintTasks(tasks);
                 return;
             }
 
